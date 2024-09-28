@@ -1,0 +1,36 @@
+/* Container for the player hand */
+.player-hand {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust column size */
+    gap: 10px; /* Space between cards */
+    padding: 10px;
+  }
+  
+  /* Individual card styling */
+  .player-hand .card {
+    background-color: #00376e;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Hover effect */
+  .player-hand .card:hover {
+    transform: translateY(-10px); /* Lift effect on hover */
+  }
+  
+  /* Adjust grid layout for smaller screens */
+  @media (max-width: 768px) {
+    .player-hand {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Smaller columns on mobile */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .player-hand {
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Even smaller for very small screens */
+    }
+  }
+  

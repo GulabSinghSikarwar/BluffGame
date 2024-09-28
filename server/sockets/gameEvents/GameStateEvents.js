@@ -1,0 +1,49 @@
+const SocketEventsEnum =require('../../utils/app.enums').SocketEventsEnum
+
+/**
+ * Sets up game state-related socket event listeners.
+ * @param {Socket} socket - The socket instance for the connection.
+ */
+const handleGameStateEvents = (socket) => {
+    socket.on(SocketEventsEnum.START_GAME, () => {
+        try {
+            console.log('Game started.');
+            // Handle start game logic
+        } catch (error) {
+            console.error(`Error in START_GAME event: ${error.message}`);
+            socket.emit('error', 'Error starting the game');
+        }
+    });
+
+    socket.on(SocketEventsEnum.RESTART_GAME, () => {
+        try {
+            console.log('Game restarted.');
+            // Handle restart game logic
+        } catch (error) {
+            console.error(`Error in RESTART_GAME event: ${error.message}`);
+            socket.emit('error', 'Error restarting the game');
+        }
+    });
+
+    socket.on(SocketEventsEnum.END_GAME, () => {
+        try {
+            console.log('Game ended.');
+            // Handle end game logic
+        } catch (error) {
+            console.error(`Error in END_GAME event: ${error.message}`);
+            socket.emit('error', 'Error ending the game');
+        }
+    });
+
+    socket.on(SocketEventsEnum.ROUND_RESULTS, (results) => {
+        try {
+            console.log('Round results:', results);
+            // Handle round results logic
+        } catch (error) {
+            console.error(`Error in ROUND_RESULTS event: ${error.message}`);
+            socket.emit('error', 'Error processing round results');
+        }
+    });
+};
+
+module.exports = { handleGameStateEvents };

@@ -1,0 +1,47 @@
+.game-room-container{
+    /* background-image: url('../assets/images/8.gif'); */
+}
+
+.game-room-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Full width */
+}
+
+.player-hand-container {
+    height: 75%; /* Make sure PlayerHand takes up 75% */
+    display: flex;
+    justify-content: center; /* Center align */
+    align-items: center; /* Center vertically */
+}
+
+.player-stats-container {
+    height: 25%; /* Make sure PlayerStats takes up 25% */
+    display: flex;
+    justify-content: center; /* Center align */
+    align-items: center; /* Center vertically */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .h-screen {
+        height: auto; /* Allow it to grow on small screens */
+    }
+
+    .flex {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+    }
+
+    /* Replace w-[80%] with standard width: 80% */
+    .container {
+        width: 100%; /* Full width on small screens */
+    }
+
+    /* Replace w-[20%] with standard width: 20% */
+    .sidebar {
+        width: 100%; /* Full width on small screens */
+        margin-top: 10px; /* Space between PlayerStats and sidebar */
+    }
+}

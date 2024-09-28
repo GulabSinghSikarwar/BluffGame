@@ -1,0 +1,68 @@
+.player-list-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+.player-list-container::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+.player-list-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #555;
+}
+
+
+
+/* PlayerList.css */
+.player-list-container {
+    max-height: 100%;
+    /* Ensures it doesn't overflow the container */
+}
+
+.player-details {
+    /* Flex container for player details */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Space out logo and card count */
+    padding: 8px;
+    /* Space inside each player card */
+    margin-bottom: 10px;
+    /* Space between player cards */
+    border-radius: 8px;
+    /* Rounded corners */
+    background-color: black;
+    /* Darker background */
+    transition: background-color 0.3s;
+    /* Smooth transition for hover */
+    color: white;
+    font-family: "Roboto", system-ui;
+    font-weight: 400;
+}
+
+/* Add hover effect */
+.player-details:hover {
+    background-color: #4A5568;
+    /* Darker on hover */
+}
+
+/* Responsive styling */
+@media screen and (max-width: 768px) {
+    .player-details {
+        flex-direction: column;
+        /* Stack items vertically on smaller screens */
+        align-items: flex-start;
+        /* Align items to the start */
+        text-align: left;
+        /* Left-align text */
+    }
+
+    .player-details img {
+        margin-bottom: 10px;
+        /* Space below the logo */
+    }
+}
