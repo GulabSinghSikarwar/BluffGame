@@ -1,8 +1,8 @@
 // game.js
 const { Card, createDeck } = require('./card'); // Use require for CommonJS
 const Player = require('./player'); // Use require for CommonJS
-const Events = require('./events'); // Import the Events enum
-const EventHandlers = require('./eventHandlers'); // Import the EventHandlers class
+const SocketEventsEnum = require('../utils/app.enums'); // Import the SocketEventsEnum enum
+const EventHandlers = require('../services/eventHandlers'); // Import the EventHandlers class
 
 class Game {
     constructor(id) {
@@ -33,29 +33,59 @@ class Game {
     }
 
     addPlayer(player) {
-        this.players.push(player);
+        // Check if the player already exists in the players array
+        const playerExists = this.players.some(existingPlayer => existingPlayer.id === player.id);
+    
+        if (!playerExists) {
+            this.players.push(player);
+            console.log(`${player} has been added to the game.`);
+        } else {
+            console.log(`${player} is already in the game.`);
+        }
     }
+
+    /**
+     * 
+     * @param {string} playerId 
+     */
+    removePlayer(player) {
+        // Find the index of the player in the players array
+        const index = this.players.findIndex(existingPlayer => existingPlayer.id === player.id);
+
+    
+        if (index !== -1) {
+            // Remove the player from the array
+            this.players.splice(index, 1);
+            console.log(`${player} has been removed from the game.`);
+        } else {
+            console.log(`${player} was not found in the game.`);
+        }
+    }
+    
+    
 
     getCurrentPlayer() {
         return this.players[this.currentPlayerIndex];
     }
 
-    distributeCards(cardsPerPlayer = 5) {
-        for (let player of this.players) {
-            player.cards = this.deck.splice(0, cardsPerPlayer);
-        }
-        return { event: Events.DISTRIBUTE_CARDS, players: this.players.map(p => p.id) };
+    distributeCards() {
+        this.shuffleDeck(); // Shuffle the deck before distributing cards
+        const cardsPerPlayer = Math.floor(this.deck.length / this.players.length);
+        this.players.forEach(player => {
+            player.cards = this.deck.splice(0, cardsPerPlayer); // Give cards to the player
+            player.sendCardCount(this.players.length - 1); // Send the number of cards to other players
+        });
     }
 
     changeTurn() {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-        return { event: Events.CHANGE_TURN, currentPlayer: this.getCurrentPlayer().id };
+        return { event: SocketEventsEnum.CHANGE_TURN, currentPlayer: this.getCurrentPlayer().id };
     }
 
     checkWinner() {
         const winner = this.players.find(player => player.cards.length === 0);
         if (winner) {
-            return { event: Events.CHECK_WINNER, winner: winner.id };
+            return { event: SocketEventsEnum.CHECK_WINNER, winner: winner.id };
         }
         return null;
     }
@@ -65,7 +95,7 @@ class Game {
         if (player) {
             player.cards = player.cards.filter(card => !cards.includes(card));
             this.moves.push({ playerId, cards });
-            return { event: Events.THROW_CARDS, playerId, cards };
+            return { event: SocketEventsEnum.THROW_CARDS, playerId, cards };
         }
         return null;
     }
@@ -74,7 +104,7 @@ class Game {
         const player = this.players.find(p => p.id === playerId);
         if (player) {
             this.moves.push({ playerId, action: 'skipped' });
-            return { event: Events.SKIP_ACTION, playerId };
+            return { event: SocketEventsEnum.SKIP_ACTION, playerId };
         }
         return null;
     }
@@ -82,22 +112,25 @@ class Game {
     checkPreviousPlayer(playerId) {
         const previousPlayerIndex = (this.currentPlayerIndex - 1 + this.players.length) % this.players.length;
         const previousPlayer = this.players[previousPlayerIndex];
-        return { event: Events.CHECK_PREVIOUS_PLAYER, previousPlayerId: previousPlayer.id, cards: previousPlayer.cards };
+        return { event: SocketEventsEnum.CHECK_PREVIOUS_PLAYER, previousPlayerId: previousPlayer.id, cards: previousPlayer.cards };
     }
 
     caughtBluff(playerId) {
-        return { event: Events.CAUGHT_BLUFF, playerId };
+        return { event: SocketEventsEnum.CAUGHT_BLUFF, playerId };
     }
 
     notifyResult(playerId, result) {
-        return { event: Events.NOTIFY_RESULT, playerId, result };
+        return { event: SocketEventsEnum.NOTIFY_RESULT, playerId, result };
     }
 
     getRoomDetails() {
+        console.log("Plays : ", this.players);
+        
         return {
             id: this.id,
-            players: this.players.map(player => ({ id: player.id, cards: player.cards })),
+            players: this.players.map(player => ({ id: player.id, name: player.name, cardCount: player.hand.length })),
             moves: this.moves,
+            started: this.started,
         };
     }
 }

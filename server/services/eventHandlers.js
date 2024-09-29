@@ -1,5 +1,5 @@
 // eventHandlers.js
-const Events = require('./events');
+const {SocketEventsEnum} = require('../utils/app.enums');
 
 class EventHandlers {
     constructor(game) {

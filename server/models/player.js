@@ -15,7 +15,8 @@ class Player {
     constructor(id, name, hand = []) {
         this.id = id;          // string
         this.name = name;      // string
-        this.hand = hand;      // Array of Card objects
+        this.hand = hand;
+              // Array of Card objects
 
         // Using JSDoc to communicate expectations, no runtime validation
     }
@@ -39,6 +40,13 @@ class Player {
         } else {
             throw new Error("Card not found in hand");
         }
+    }
+    hasAceOfSpades() {
+        return this.cards.some(card => card.rank === 'Ace' && card.suit === 'Spades');
+    }
+    sendCardCount(otherPlayerCount) {
+        // Logic to send the count of cards to the player (using socket)
+        // Example: socket.emit(Events.CARD_COUNT, { count: this.cards.length });
     }
 }
 

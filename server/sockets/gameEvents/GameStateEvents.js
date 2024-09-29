@@ -1,17 +1,18 @@
-const SocketEventsEnum =require('../../utils/app.enums').SocketEventsEnum
-
+const { SocketEventsEnum } = require('../../utils/app.enums')
+const gameService = require('../../services/gameService')
 /**
  * Sets up game state-related socket event listeners.
  * @param {Socket} socket - The socket instance for the connection.
  */
 const handleGameStateEvents = (socket) => {
-    socket.on(SocketEventsEnum.START_GAME, () => {
-        try {
-            console.log('Game started.');
-            // Handle start game logic
-        } catch (error) {
-            console.error(`Error in START_GAME event: ${error.message}`);
-            socket.emit('error', 'Error starting the game');
+
+    socket.on(Events.START_GAME, (gameId) => {
+        const gameStarted = gameService.startGame(gameId);
+        if (gameStarted) {
+            const roomDetails = gameService.getRoomDetails(gameId);
+            socket.to(gameId).emit(Events.GAME_STARTED, roomDetails); // Notify players that the game has started
+        } else {
+            socket.emit(Events.START_GAME_FAILED, 'Not enough players to start the game.');
         }
     });
 
@@ -43,6 +44,11 @@ const handleGameStateEvents = (socket) => {
             console.error(`Error in ROUND_RESULTS event: ${error.message}`);
             socket.emit('error', 'Error processing round results');
         }
+    });
+
+    socket.on(Events.GET_ROOM_DETAILS, (gameId) => {
+        const roomDetails = getRoomDetails(gameId);
+        socket.emit(Events.ROOM_DETAILS, roomDetails);
     });
 };
 

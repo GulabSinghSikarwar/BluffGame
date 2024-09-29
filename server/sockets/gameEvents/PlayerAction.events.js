@@ -1,10 +1,11 @@
-const SocketEventsEnum =require('../../utils/app.enums').SocketEventsEnum
-
+const {SocketEventsEnum} = require('../../utils/app.enums').SocketEventsEnum
+const gameService = require('../../services/gameService')
 /**
  * Sets up player action-related socket event listeners.
  * @param {Socket} socket - The socket instance for the connection.
  */
 const handlePlayerActions = (socket) => {
+
     socket.on(SocketEventsEnum.PLAYER_UPDATE, (playerData) => {
         try {
             console.log('Player update:', playerData);
@@ -45,16 +46,6 @@ const handlePlayerActions = (socket) => {
         }
     });
 
-    socket.on(SocketEventsEnum.PASS_TURN, () => {
-        try {
-            console.log('Turn passed.');
-            // Handle turn passing logic
-        } catch (error) {
-            console.error(`Error in PASS_TURN event: ${error.message}`);
-            socket.emit('error', 'Error passing turn');
-        }
-    });
-
     socket.on(SocketEventsEnum.DRAW_CARD, (card) => {
         try {
             console.log(`Card drawn: ${card}`);
@@ -83,6 +74,30 @@ const handlePlayerActions = (socket) => {
             console.error(`Error in CURRENT_PLAYER event: ${error.message}`);
             socket.emit('error', 'Error processing current player');
         }
+    });
+
+    socket.on(SocketEventsEnum.CHANGE_TURN, (gameId) => {
+        gameService.changeTurn(gameId);
+        socket.emit(gameService.TURN_CHANGED, { message: 'Turn has been changed' });
+    });
+
+    socket.on(SocketEventsEnum.THROW_CARDS, ({ gameId, playerId, cards }) => {
+        gameService.throwCards(gameId, playerId, cards);
+        socket.emit(SocketEventsEnum.CARDS_THROWN, { message: 'Cards have been thrown' });
+    });
+
+    socket.on(SocketEventsEnum.CHECK_PREVIOUS_PLAYER, (gameId, currentPlayerId) => {
+        const previousPlayer = gameService.checkPreviousPlayer(gameId, currentPlayerId);
+        socket.emit(SocketEventsEnum.PREVIOUS_PLAYER_RESULT, { previousPlayer });
+    });
+
+    socket.on(SocketEventsEnum.SKIP_ACTION, (gameId, playerId) => {
+        skipAction(gameId, playerId);
+        socket.emit(SocketEventsEnum.ACTION_SKIPPED, { message: 'Action skipped for player' });
+    });
+    socket.on(SocketEventsEnum.CAUGHT_BLUFF, (gameId, playerId) => {
+        const result = gameService.caughtBluff(gameId, playerId);
+        socket.emit(SocketEventsEnum.BLUFF_RESULT, { result });
     });
 };
 

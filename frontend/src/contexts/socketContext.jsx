@@ -7,7 +7,7 @@ const SocketProvider = ({ children }) => {
     const [name, setName] = useState('')
     const [room, setRoom] = useState('')
     const ENDPOINT = 'http://localhost:5000/';
-    const socket = io(ENDPOINT, { transports: ['websocket', 'polling'] })
+    const socket = io(ENDPOINT)
     console.log("socket : ",socket);
     
 
