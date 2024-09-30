@@ -36,6 +36,8 @@ const PlayerList = () => {
     useEffect(() => {
         console.log("Game STate : ", gameState);
         console.log("Game details : ", gameCtx.gameState);
+        console.log("GameState : ", gameState);
+
 
     }, [gameState])
     return (

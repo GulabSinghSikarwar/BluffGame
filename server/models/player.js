@@ -1,5 +1,5 @@
 
-const {Card} = require('./card');
+const { Card } = require('./card');
 
 /**
  * Represents a player in the game.
@@ -10,20 +10,16 @@ class Player {
      * Creates a Player.
      * @param {string} id - The unique identifier for the player.
      * @param {string} name - The name of the player.
-     * @param {Card[]} [hand=[]] - An optional array of Card objects.
+     * @param {string[]} [hand=[]] - An optional array of Card objects.
      */
     constructor(id, name, hand = []) {
         this.id = id;          // string
         this.name = name;      // string
         this.hand = hand;
-              // Array of Card objects
-
-        // Using JSDoc to communicate expectations, no runtime validation
     }
-
     /**
      * Adds a card to the player's hand.
-     * @param {Card} card - The card to add.
+     * @param {string} card - The card to add.
      */
     addCard(card) {
         this.hand.push(card);
@@ -31,7 +27,7 @@ class Player {
 
     /**
      * Removes a card from the player's hand.
-     * @param {Card} card - The card to remove.
+     * @param {string} card - The card to remove.
      */
     removeCard(card) {
         const index = this.hand.indexOf(card);
@@ -46,9 +42,9 @@ class Player {
     // }
 
     hasAceOfSpades() {
-        return this.hand.some(card => card.rank === 'A' && card.suit === 'Spades');
+        return this.hand.some(card => card.rank === 'A' && card.suit === 'S');
     }
-    
+
 
     sendCardCount(otherPlayerCount) {
         // Logic to send the count of cards to the player (using socket)

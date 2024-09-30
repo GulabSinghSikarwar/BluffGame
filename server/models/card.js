@@ -23,15 +23,16 @@ class Card {
  * Creates a deck of playing cards.
  * @returns {Card[]} - An array of Card objects representing the deck.
  */
- const createDeck = () => {
-    const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+const createDeck = () => {
+    const suits = ['H', 'D', 'C', 'S'];
     const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
     const deck = [];
 
     for (const suit of suits) {
         for (const rank of ranks) {
             // Create an instance of Card for each combination of suit and rank
-            deck.push(new Card(suit, rank));
+            const card = rank + '' + suit;
+            deck.push(card);
         }
     }
 
@@ -39,4 +40,4 @@ class Card {
     return deck.sort(() => Math.random() - 0.5);
 };
 
-module.exports ={ createDeck ,Card}
+module.exports = { createDeck, Card }

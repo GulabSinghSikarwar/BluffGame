@@ -1,23 +1,58 @@
 const { SocketEventsEnum } = require('../../utils/app.enums')
 const gameService = require('../../services/gameService')
+const Game = require('../../models/game')
 /**
  * Sets up game state-related socket event listeners.
  * @param {Socket} socket - The socket instance for the connection.
  */
-const handleGameStateEvents = (socket) => {
+const handleGameStateEvents = (socket, io) => {
 
-    socket.on(SocketEventsEnum.START_GAME, (gameId) => {
+    socket.on(SocketEventsEnum.START_GAME, () => {
+        const gameId = gameService.getRoomId(socket.id);
         const gameStarted = gameService.startGame(gameId);
-        if (gameStarted) {
-            const roomDetails = gameService.getRoomDetails(gameId);
-            socket.to(gameId).emit(Events.GAME_STARTED, roomDetails); // Notify players that the game has started
+        console.log("Game Starting  ................");
+        console.log("Game Started ", gameStarted);
 
+        if (gameStarted) {
+            console.log("Game Started  ................");
+            /**
+             * @type  {Game}
+             */
             const game = gameService.getGame(gameId);
-            game.distributeCards(); // Distribute cards to each player individually
+
+            console.log("Game Distribution");
+
+            // Create a single object for all players' card counts with player IDs as keys
+            const allPlayerCardCount = game.players.reduce((acc, player) => {
+
+                acc[player.id] = { name: player.name, cardCount: player.hand.length };
+                return acc;
+            }, {}); // Initialize with an empty object
+
+            // Notify each player about their hand and the number of cards others have
+            game.players.forEach(player => {
+                console.log("Socket id : ", player.id);
+                const cardCount = { ...allPlayerCardCount }; // Shallow copy works for simple objects
+
+                console.log("Before deleting:", cardCount);
+
+                // Delete the current player's entry from the card count object
+                delete cardCount[player.id];
+                console.log("After deleting:", cardCount);
+
+                const playerData = {
+                    myHand: { id: player.id, cards: player.hand, name: player.name }, // The cards for this specific player
+                    otherPlayers: cardCount, // Info about other players (card count)
+                };
+
+                // Emit to each player individually
+                io.to(player.id).emit(SocketEventsEnum.DISTRIBUTE_CARDS, playerData); // Notify each
+            });
         } else {
             socket.emit(SocketEventsEnum.START_GAME_FAILED, 'Not enough players to start the game.');
         }
     });
+
 
 
     socket.on(SocketEventsEnum.RESTART_GAME, () => {

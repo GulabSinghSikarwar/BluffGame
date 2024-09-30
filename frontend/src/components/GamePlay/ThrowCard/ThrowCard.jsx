@@ -25,7 +25,7 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
     };
 
     const renderCardImage = (card) => {
-        console.log("card : ", card);
+        // console.log("card : ", card);
 
         // return <></>
 

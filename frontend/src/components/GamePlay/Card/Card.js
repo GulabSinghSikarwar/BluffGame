@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Card = ({ card, index, triggerAnimation }) => {
-  const imageUrl = `/assets/cards/${card.rank + card.suit}.png`;
+  const imageUrl = `/assets/cards/${card}.png`;
 
   const animationStyle = triggerAnimation
     ? {

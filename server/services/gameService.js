@@ -45,11 +45,22 @@ const joinGame = (gameId, player) => {
  * @returns {Object|null} The room details or null if not found.
  */
 const getRoomDetails = (gameId) => {
-
+    /**
+     * @type {Game}
+     */
     const game = games[gameId];
     // console.log("game Service getRoomDetails,    : ", game);
     return game ? game.getRoomDetails() : null;
 };
+
+/**
+ * @param {string} gameId
+ * @returns {Game} 
+ */
+const getGame = (gameId) => {
+    return games[gameId];
+}
+
 /**
  * Retrieves player details from a specified game.
  *
@@ -57,10 +68,10 @@ const getRoomDetails = (gameId) => {
  * @returns {Array|Object|null} - Returns an array of player objects if the game is found,
  *                                returns null if the game does not exist.
  */
-const getPlayerDetails = (gameId,socketId) => {
+const getPlayerDetails = (gameId, socketId) => {
     // Retrieve the game instance from the games object using the gameId
     const game = games[gameId];
-     
+
     if (game) {
         // Call getPlayerInfo method on the game instance to retrieve player information
         const players = game.getPlayerInfo(socketId);
@@ -68,7 +79,6 @@ const getPlayerDetails = (gameId,socketId) => {
     }
     return null; // Return null if the game is not found
 };
-
 
 /**
  * Make a player move.
@@ -87,7 +97,11 @@ const playerMove = (gameId, playerId, card) => {
 };
 
 const startGame = (gameId) => {
+    /**
+     * @type  {Game}
+     */
     const game = games[gameId];
+    console.log("Start Game : ", game);
     return game ? game.startGame() : false;
 };
 
@@ -183,5 +197,9 @@ module.exports = {
     changeTurn,
     removePlayer,
     getRoomId,
-    getPlayerDetails
+    getPlayerDetails,
+    games,
+    playersRooms,
+    getGame
+
 };

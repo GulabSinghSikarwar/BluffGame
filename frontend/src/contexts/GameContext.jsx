@@ -8,7 +8,7 @@ const GameContext = createContext();
 
 const initialGameState = {
     players: [],
-    cards: {},
+    cards: [],
     currentTurn: null,
     gameStarted: false,
 };
@@ -35,8 +35,8 @@ const GameProvider = ({ children }) => {
     };
 
     const playerLeft = (data) => {
-        console.log("Data : ",data);
-        
+        console.log("Data : ", data);
+
         setGameState(prevState => (
             {
                 ...prevState,
@@ -45,13 +45,26 @@ const GameProvider = ({ children }) => {
         ))
     }
 
-    const distributeCards = (playerId, cards) => {
+    const distributeCards = (cardResponse) => {
+        const players = []
+        for (let key in cardResponse.otherPlayers) {
+            players.push({ ...cardResponse.otherPlayers[key], id: key })
+        }
+
+        cardResponse.myHand.cards.sort()
+        
+        players.push({
+            id: cardResponse.myHand.id,
+            name: cardResponse.myHand.name,
+            cardCount: cardResponse.myHand.cards.length,
+        })
+
+        console.log("Players : ", players);
+
         setGameState((prevState) => ({
             ...prevState,
-            cards: {
-                ...prevState.cards,
-                [playerId]: cards,
-            },
+            cards: cardResponse.myHand.cards,
+            players: players,
         }));
     };
 
@@ -66,7 +79,7 @@ const GameProvider = ({ children }) => {
     };
 
     const startGame = () => {
-        if (gameState.players.length >= 3) {
+        if (gameState.players.length >= 1) {
             setGameState((prevState) => ({
                 ...prevState,
                 currentTurn: 0, // Start with the first player
@@ -76,7 +89,7 @@ const GameProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (gameState.players.length >= 3 && !gameState.gameStarted) {
+        if (gameState.players.length >= 1 && !gameState.gameStarted) {
             startGame();
         }
     }, [gameState.players]);

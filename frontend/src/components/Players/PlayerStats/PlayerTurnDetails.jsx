@@ -30,8 +30,8 @@ function PlayerTurnSidebar() {
 
 
     const handleStartGame = () => {
-        if (gameCtx.gameState.players.length >= 3) {
-            // startGame();
+        if (gameCtx.gameState.players.length >= 1) {
+            startGame();
             toastService.success("Game Is About Start")
         } else {
             toastService.warning("Need atleast Three Player to start Game")

@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { GameContext } from './GameContext';
 import { SocketEventsEnum } from '../utils/constants';
 import toastService from '../services/ToastService';
+import SocketEvents from '../utils/SocketEvents';
 
 // Create the SocketContext
 const SocketContext = createContext();
@@ -14,7 +15,7 @@ const SocketProvider = ({ children }) => {
     const { joinGame, distributeCards, changeTurn, joinedNewPlayer, playerLeft } = useContext(GameContext); // Using GameContext to update the game state
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
-
+    const socketEvents = SocketEvents.getInstance(socket)
     useEffect(() => {
         // Listen for socket events
         socket.on(SocketEventsEnum.JOINED_ROOM, (data) => {
@@ -24,9 +25,11 @@ const SocketProvider = ({ children }) => {
 
         });
 
-        socket.on(SocketEventsEnum.DISTRIBUTE_CARDS, (playerId, cards) => {
-            console.log(`Distributing cards to player: ${playerId}`, cards);
-            distributeCards(playerId, cards); // Distribute cards to player
+        socket.on(SocketEventsEnum.DISTRIBUTE_CARDS, (cardResponse) => {
+            console.log("Cards info : ",cardResponse);
+            
+            // console.log(`Distributing cards to player: ${playerId}`, cards);
+            distributeCards(cardResponse); // Distribute cards to player
         });
 
         socket.on(SocketEventsEnum.CHANGE_TURN, (newTurn) => {
@@ -59,30 +62,27 @@ const SocketProvider = ({ children }) => {
 
     // Emit events from the frontend
     const startGame = () => {
-        socket.emit(SocketEventsEnum.START_GAME);
-        console.log('Game started');
-    };
+        socketEvents.emitEvent(SocketEventsEnum.START_GAME);
+     };
 
     const joinGameRoom = (playerName) => {
-        socket.emit(SocketEventsEnum.JOIN_ROOM, playerName);
-        console.log(`Joining room as: ${playerName}`);
-    };
+        socketEvents.emitEvent(SocketEventsEnum.JOIN_ROOM, playerName);
+     };
 
     const leaveGame = () => {
-        console.log(" here : About to leave ", );
-        
-        socket.emit(SocketEventsEnum.LEAVE_ROOM, {
+        console.log(" here : About to leave ",);
+        socketEvents.emitEvent(SocketEventsEnum.LEAVE_ROOM, {
             room: room,
         })
     }
 
     const throwCard = (card) => {
-        socket.emit(SocketEventsEnum.THROW_CARDS, { card });
+        socketEvents.emitEvent(SocketEventsEnum.THROW_CARDS, { card });
         console.log(`Card thrown: ${card}`);
     };
 
     const skipTurn = () => {
-        socket.emit(SocketEventsEnum.SKIP_ACTION);
+        socketEvents.emitEvent(SocketEventsEnum.SKIP_ACTION);
         console.log('Turn skipped');
     };
 

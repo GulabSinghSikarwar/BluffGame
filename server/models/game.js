@@ -69,9 +69,11 @@ class Game {
     }
 
     startGame() {
-        if (this.players.length >= 3) {
+        if (this.players.length >= 1) {
+            console.log(" here ", this.players);
             this.started = true;
             this.currentPlayerIndex = this.players.findIndex(p => p.hasAceOfSpades()); // Find the player with Ace of Spades
+
             this.distributeCards();
             return true; // Game successfully started
         }
@@ -89,7 +91,6 @@ class Game {
             console.log(`${player} is already in the game.`);
         }
     }
-
     /**
      * 
      * @param {string} playerId 
@@ -99,9 +100,6 @@ class Game {
 
         // Find the index of the player in the players array
         const index = this.players.findIndex(existingPlayer => existingPlayer.id === player);
-
-
-
         if (index !== -1) {
             // Remove the player from the array
             this.players.splice(index, 1);
@@ -109,11 +107,7 @@ class Game {
         } else {
             console.log(`${player} was not found in the game.`);
         }
-
-
     }
-
-
 
     getCurrentPlayer() {
         return this.players[this.currentPlayerIndex];
@@ -136,27 +130,18 @@ class Game {
 
     distributeCards() {
         const deck = _.shuffle(createDeck());
+        console.log("deck : ",deck);
+        console.log("playes : ",this.players);
+        
         const handSize = Math.floor(deck.length / this.players.length);
+        console.log("here at disribution in class");
 
         // Assign cards to each player
         this.players.forEach(player => {
             player.hand = deck.splice(0, handSize); // Give each player a portion of the deck
         });
 
-        // Notify each player about their hand and the number of cards others have
-        this.players.forEach(player => {
-            const otherPlayers = this.players
-                .filter(p => p.id !== player.id)
-                .map(p => ({ id: p.id, name: p.name, cardCount: p.hand.length })); // Only send card counts of others
-
-            const playerData = {
-                myHand: player.hand, // The cards for this specific player
-                otherPlayers: otherPlayers, // Info about other players (card count)
-            };
-
-            // Emit to each player individually
-            player.socket.emit(SocketEventsEnum.CARDS_DISTRIBUTED, playerData);
-        });
+      
     }
 
 
@@ -212,6 +197,7 @@ class Game {
             started: this.started,
         };
     }
+
     clearTablePile() {
         return this.gameOperations.clearTablePile();
     }
