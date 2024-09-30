@@ -16,6 +16,10 @@ const handleRoomEvents = (socket) => {
 
     socket.on(SocketEventsEnum.LEAVE_ROOM, (data) => {
         const room = data.room;
+        console.log("room : ", room.length);
+        
+        console.log("Listened : Left : ..............",room);
+        
         // Handle leave room logic
         handlePlayerLeave(socket, room, true);
     });

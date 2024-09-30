@@ -14,6 +14,7 @@ function PlayerTurnSidebar() {
     const gameCtx = useContext(GameContext)
     const { startGame } = useContext(SocketContext)
     // Function to go to the next player's turn
+    const { leaveGame } = useContext(SocketContext)
 
     const navigate = useNavigate()
     const nextTurn = () => {
@@ -31,7 +32,7 @@ function PlayerTurnSidebar() {
     const handleStartGame = () => {
         if (gameCtx.gameState.players.length >= 3) {
             // startGame();
-            toastService.success("Started Game")
+            toastService.success("Game Is About Start")
         } else {
             toastService.warning("Need atleast Three Player to start Game")
         }
@@ -42,10 +43,9 @@ function PlayerTurnSidebar() {
         // Confirm with the user before leaving the room
         const confirmLeave = window.confirm("Are you sure you want to leave the room?");
         if (confirmLeave) {
-            // Emit the LEAVE_ROOM event
-            // socket.emit('LEAVE_ROOM'); // Ensure your server listens for this event
+            console.log("About to Leave Game ");
 
-            // Navigate back to the main page
+            leaveGame()
             navigate('/');
         }
     };
@@ -94,7 +94,7 @@ function PlayerTurnSidebar() {
             </div>
 
             <div className="flex flex-col items-center space-y-6">
-                
+
                 <div className="w-full p-4 bg-purplePallete-500 rounded">
                     <h3 className="text-center text-md font-semibold">Previous Turn</h3>
                     <p className="text-center">{previousTurn}</p>

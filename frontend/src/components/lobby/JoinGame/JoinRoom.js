@@ -11,6 +11,7 @@ const JoinRoom = () => {
   const { socket } = useContext(SocketContext);
 
   const mainCtx = useContext(MainContext)
+  const { room } = useContext(SocketContext)
   const joinRoom = () => {
     console.log("hello");
     console.log("socket: ", socket);
@@ -18,6 +19,7 @@ const JoinRoom = () => {
     if (roomId && username) { // Check if both roomId and username are provided
       mainCtx.setRoom(roomId)
       mainCtx.setName(username)
+      room.setRoom(roomId)
       socket.emit(SocketEventsEnum.JOIN_ROOM, { room: roomId, name: username });
       navigate(`/room/${roomId}`);
     } else {

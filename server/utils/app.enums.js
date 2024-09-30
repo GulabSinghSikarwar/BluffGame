@@ -17,7 +17,7 @@ const SocketEventsEnum = Object.freeze({
   NOTIFY_RESULT: 'NOTIFY_RESULT',
   SKIP_ACTION: 'SKIP_ACTION',
   CAUGHT_BLUFF: 'CAUGHT_BLUFF',
-  PLAYER_LEFT:'PLAYER_LEFT',
+  PLAYER_LEFT: 'PLAYER_LEFT',
 
   // Game State Events
   START_GAME: 'START_GAME',
@@ -40,6 +40,10 @@ const SocketEventsEnum = Object.freeze({
   // Error
   ERROR: 'ERROR',
 });
+
+const eventTypes = {
+  GAME_EVENTS: 'GAME_EVENTS'
+}
 const test = {}
 
-module.exports = { SocketEventsEnum , test}
+module.exports = { SocketEventsEnum, test, eventTypes }

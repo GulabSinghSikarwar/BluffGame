@@ -68,6 +68,14 @@ const SocketProvider = ({ children }) => {
         console.log(`Joining room as: ${playerName}`);
     };
 
+    const leaveGame = () => {
+        console.log(" here : About to leave ", );
+        
+        socket.emit(SocketEventsEnum.LEAVE_ROOM, {
+            room: room,
+        })
+    }
+
     const throwCard = (card) => {
         socket.emit(SocketEventsEnum.THROW_CARDS, { card });
         console.log(`Card thrown: ${card}`);
@@ -84,6 +92,7 @@ const SocketProvider = ({ children }) => {
         joinGameRoom,
         throwCard,
         skipTurn,
+        leaveGame,
         name: { name, setName }, // Expose name state and setter
         room: { room, setRoom }  // Expose room state and setter
     };

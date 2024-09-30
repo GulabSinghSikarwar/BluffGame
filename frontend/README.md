@@ -68,3 +68,23 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Phase 1 : 
+1. Start Game Trigger Frontend 
+2. Start Game Listened at the BE 
+3. Card Distribution 
+4. Setting the Player Who has Ace of Spade  as Player who can start the Game 
+5. Notifying the Player to Start the Game .
+   
+
+## Phase 2 : 
+1. Frontend Listen For the Turn   
+2. Front Throws the Cards 
+
+
+## Phase 3 : 
+1.  BE listening to Move and Notifiying Other Player regarding the Move 
+2.  Changing the Move 
+3.  Notifying the Current Player 
+
+ 

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { suits } from '../../../utils/constants';
 import './ThrowCard.css'
+import { SocketContext } from '../../../contexts/socketContext';
 const CardThrow = ({ cardsInHand, onThrow }) => {
     const [selectedCards, setSelectedCards] = useState([]);
     const [isBluff, setIsBluff] = useState(false);
+    const {leaveGame} =useContext(SocketContext)
 
     const toggleCardSelection = (card) => {
         setSelectedCards((prev) =>
@@ -58,13 +60,13 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
                 ))}
             </div>
 
-            <div className="flex items-center mb-4 bg-purplePallete-700 px-5 py-3 rounded  w-full justify-center">
+            <div className="flex items-center mb-4 bg-purplePallete-700 px-5 py-4 rounded  w-full justify-center ">
                 <input
                     type="checkbox"
                     id="bluff"
                     checked={isBluff}
                     onChange={(e) => setIsBluff(e.target.checked)}
-                    className="mr-2"
+                    className="mr-2 "
                 />
                 <label htmlFor="bluff " className='text-white'>Make a Bluff</label>
             </div>

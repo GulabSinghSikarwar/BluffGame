@@ -4,17 +4,63 @@ const Player = require('./player'); // Use require for CommonJS
 const SocketEventsEnum = require('../utils/app.enums'); // Import the SocketEventsEnum enum
 const EventHandlers = require('../services/eventHandlers'); // Import the EventHandlers class
 const _ = require('lodash'); // For shuffling
-class Game {
-    constructor(id) {
-        this.id = id;
-        this.players = [];
-        this.deck = createDeck();
-        this.currentPlayerIndex = null; // To be set when the game starts
-        this.moves = [];
-        this.roundWinners = [];
-        this.eventHandlers = new EventHandlers(this); // Create an instance of EventHandlers
-    }
+const TablePile = require('./tablePile'); // Import the TablePile class
+const GameOperations = require('./gameOperations'); // Import GameOperations class
 
+class Game {
+    /**
+         * Create a game.
+         * @param {string} id - The unique ID of the game.
+         */
+    constructor(id) {
+        /**
+         * @type {string}
+         * @description The unique ID of the game.
+         */
+        this.id = id;
+
+        /**
+         * @type {Array<Player>}
+         * @description Array of players participating in the game.
+         */
+        this.players = [];
+
+        /**
+         * @type {Array<Card>}
+         * @description The deck of cards being used in the game.
+         */
+        this.deck = createDeck();
+
+        /**
+         * @type {number|null}
+         * @description The index of the current player whose turn it is. Starts as null before the game starts.
+         */
+        this.currentPlayerIndex = null;
+
+        /**
+         * @type {Array<Object>}
+         * @description List of moves made in the game, containing details about the player and their actions.
+         */
+        this.moves = [];
+
+        /**
+         * @type {Array<string>}
+         * @description List of players who have won rounds in the game.
+         */
+        this.roundWinners = [];
+
+        /**
+         * @type {TablePile}
+         * @description The pile of cards currently on the table.
+         */
+        this.tablePile = new TablePile();
+
+        /**
+         * @type {GameOperations}
+         * @description An instance of GameOperations for handling game-specific operations like throwing cards, bluffing, etc.
+         */
+        this.gameOperations = new GameOperations(this);
+    }
     shuffleDeck() {
         for (let i = this.deck.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -78,8 +124,8 @@ class Game {
      * @returns {Player|null} - The player information or null if not found.
      */
     getPlayerInfo(socketId) {
-        console.log("socketid : ",socketId);
-        
+        console.log("socketid : ", socketId);
+
         const player = this.players.find((player) => {
             return player.id == socketId;
         });
@@ -119,31 +165,25 @@ class Game {
         return { event: SocketEventsEnum.CHANGE_TURN, currentPlayer: this.getCurrentPlayer().id };
     }
 
+    /**
+     * 
+     * @returns {number}
+     */
+    nextTurn() {
+        // Increment the currentPlayerIndex and wrap around if necessary
+        return this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    }
+
     checkWinner() {
-        const winner = this.players.find(player => player.cards.length === 0);
-        if (winner) {
-            return { event: SocketEventsEnum.CHECK_WINNER, winner: winner.id };
-        }
-        return null;
+        return this.gameOperations.checkWinner();
     }
 
     throwCards(playerId, cards) {
-        const player = this.players.find(p => p.id === playerId);
-        if (player) {
-            player.cards = player.cards.filter(card => !cards.includes(card));
-            this.moves.push({ playerId, cards });
-            return { event: SocketEventsEnum.THROW_CARDS, playerId, cards };
-        }
-        return null;
+        return this.gameOperations.throwCards(playerId, cards);
     }
 
     skipTurn(playerId) {
-        const player = this.players.find(p => p.id === playerId);
-        if (player) {
-            this.moves.push({ playerId, action: 'skipped' });
-            return { event: SocketEventsEnum.SKIP_ACTION, playerId };
-        }
-        return null;
+        return this.gameOperations.skipTurn(playerId);
     }
 
     checkPreviousPlayer(playerId) {
@@ -153,7 +193,7 @@ class Game {
     }
 
     caughtBluff(playerId) {
-        return { event: SocketEventsEnum.CAUGHT_BLUFF, playerId };
+        return this.gameOperations.caughtBluff(playerId);
     }
 
     notifyResult(playerId, result) {
@@ -172,6 +212,10 @@ class Game {
             started: this.started,
         };
     }
+    clearTablePile() {
+        return this.gameOperations.clearTablePile();
+    }
+
 
 }
 
