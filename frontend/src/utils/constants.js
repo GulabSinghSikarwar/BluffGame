@@ -98,7 +98,7 @@ export const getRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * playerHands_bg.length);
     return playerHands_bg[randomIndex];
 }
-export const SocketEventsEnum =Object.freeze({
+export const SocketEventsEnum = Object.freeze({
     // Room Management Events
     JOIN_ROOM: 'JOIN_ROOM',
     JOINED_ROOM: 'JOINED_ROOM',
@@ -116,6 +116,7 @@ export const SocketEventsEnum =Object.freeze({
     NOTIFY_RESULT: 'NOTIFY_RESULT',
     SKIP_ACTION: 'SKIP_ACTION',
     CAUGHT_BLUFF: 'CAUGHT_BLUFF',
+    PLAYER_LEFT:'PLAYER_LEFT',
   
     // Game State Events
     START_GAME: 'START_GAME',

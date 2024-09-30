@@ -11,7 +11,7 @@ const SocketContext = createContext();
 const socket = io('http://localhost:5000'); // Change the URL to your server address
 
 const SocketProvider = ({ children }) => {
-    const { joinGame, distributeCards, changeTurn, joinedNewPlayer } = useContext(GameContext); // Using GameContext to update the game state
+    const { joinGame, distributeCards, changeTurn, joinedNewPlayer, playerLeft } = useContext(GameContext); // Using GameContext to update the game state
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
 
@@ -21,7 +21,6 @@ const SocketProvider = ({ children }) => {
             console.log('Joined room:', data);
             joinGame(data.gameDetails)
             // players.forEach((player) => joinGame(player)); // Call joinGame for each player
-
 
         });
 
@@ -40,6 +39,10 @@ const SocketProvider = ({ children }) => {
             toastService.info("New User Have Joined")
             joinedNewPlayer(data.player)
         });
+        socket.on(SocketEventsEnum.PLAYER_LEFT, (data) => {
+            toastService.info(data.message)
+            playerLeft(data)
+        })
 
         socket.on('disconnect', () => {
             console.log('Socket disconnected');

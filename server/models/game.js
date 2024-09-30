@@ -53,8 +53,7 @@ class Game {
 
         // Find the index of the player in the players array
         const index = this.players.findIndex(existingPlayer => existingPlayer.id === player);
-        console.log("This.players : ", this.players);
-        console.log("inde: ", index);
+
 
 
         if (index !== -1) {
@@ -64,7 +63,7 @@ class Game {
         } else {
             console.log(`${player} was not found in the game.`);
         }
-        console.log("After removing : ", this.players);
+
 
     }
 
@@ -72,6 +71,21 @@ class Game {
 
     getCurrentPlayer() {
         return this.players[this.currentPlayerIndex];
+    }
+    /**
+     * Gets player information based on their socket ID.
+     * @param {string} socketId - The ID of the player's socket.
+     * @returns {Player|null} - The player information or null if not found.
+     */
+    getPlayerInfo(socketId) {
+        console.log("socketid : ",socketId);
+        
+        const player = this.players.find((player) => {
+            return player.id == socketId;
+        });
+
+        console.log("Finding Players ____: ", player);
+        return player;
     }
 
     distributeCards() {

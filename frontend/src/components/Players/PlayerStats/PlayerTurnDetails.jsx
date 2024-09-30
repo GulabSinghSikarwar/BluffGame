@@ -3,12 +3,15 @@ import './PlayerTurnDetails.css';
 import { MainContext } from "../../../contexts/mainContext";
 import { SocketContext } from "../../../contexts/socketContext";
 import { useNavigate } from "react-router-dom";
+import { GameContext } from "../../../contexts/GameContext";
+import toastService from "../../../services/ToastService";
 
 
 const players = ["Player 1", "Player 2", "Player 3", "Player 4"]; // Array of players
 function PlayerTurnSidebar() {
     const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
     const mainCtx = useContext(MainContext)
+    const gameCtx = useContext(GameContext)
     const { startGame } = useContext(SocketContext)
     // Function to go to the next player's turn
 
@@ -26,7 +29,12 @@ function PlayerTurnSidebar() {
 
 
     const handleStartGame = () => {
-        startGame();
+        if (gameCtx.gameState.players.length >= 3) {
+            // startGame();
+            toastService.success("Started Game")
+        } else {
+            toastService.warning("Need atleast Three Player to start Game")
+        }
     };
 
 
@@ -86,6 +94,7 @@ function PlayerTurnSidebar() {
             </div>
 
             <div className="flex flex-col items-center space-y-6">
+                
                 <div className="w-full p-4 bg-purplePallete-500 rounded">
                     <h3 className="text-center text-md font-semibold">Previous Turn</h3>
                     <p className="text-center">{previousTurn}</p>

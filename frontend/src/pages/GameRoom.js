@@ -98,9 +98,9 @@ const GameRoom = () => {
 
     return (
         <div>
-            <div className="h-screen flex w-screen ">
+            <div className="h-screen flex w-screen  ">
 
-                <div className='flex flex-col  lg:w-[80%] md:w-full'>{/* First div taking 75% height */}
+                <div className='flex flex-col  lg:w-[80%] md:w-full  '>{/* First div taking 75% height */}
                     <div className="h-[75%] bg-white-500  game-room-container">
                         <PlayerHand selectedPlayer={selectedPlayer} />
 

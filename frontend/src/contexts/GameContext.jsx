@@ -34,6 +34,17 @@ const GameProvider = ({ children }) => {
         toastService.info(`New Player Joined : ${JSON.stringify(player)}`)
     };
 
+    const playerLeft = (data) => {
+        console.log("Data : ",data);
+        
+        setGameState(prevState => (
+            {
+                ...prevState,
+                players: [...data.players]
+            }
+        ))
+    }
+
     const distributeCards = (playerId, cards) => {
         setGameState((prevState) => ({
             ...prevState,
@@ -76,7 +87,8 @@ const GameProvider = ({ children }) => {
         distributeCards,
         changeTurn,
         startGame,
-        joinedNewPlayer
+        joinedNewPlayer,
+        playerLeft
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

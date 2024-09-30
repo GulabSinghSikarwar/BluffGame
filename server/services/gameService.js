@@ -45,13 +45,30 @@ const joinGame = (gameId, player) => {
  * @returns {Object|null} The room details or null if not found.
  */
 const getRoomDetails = (gameId) => {
-    console.log(" Gameid : ", gameId);
 
     const game = games[gameId];
     // console.log("game Service getRoomDetails,    : ", game);
-
     return game ? game.getRoomDetails() : null;
 };
+/**
+ * Retrieves player details from a specified game.
+ *
+ * @param {string} gameId - The unique identifier of the game.
+ * @returns {Array|Object|null} - Returns an array of player objects if the game is found,
+ *                                returns null if the game does not exist.
+ */
+const getPlayerDetails = (gameId,socketId) => {
+    // Retrieve the game instance from the games object using the gameId
+    const game = games[gameId];
+     
+    if (game) {
+        // Call getPlayerInfo method on the game instance to retrieve player information
+        const players = game.getPlayerInfo(socketId);
+        return players; // Return the retrieved player information
+    }
+    return null; // Return null if the game is not found
+};
+
 
 /**
  * Make a player move.
@@ -130,19 +147,26 @@ const caughtBluff = (gameId, playerId) => {
 
 const removePlayer = (socketId) => {
     const roomId = playersRooms[socketId];
-    console.log("Room ID : ", roomId);
+
 
 
     if (!roomId) return;
     const game = games[roomId]
-    console.log("game  : ", game);
     if (!game) {
         console.log('Game Not Found');
         return
     }
     game.removePlayer(socketId)
-    console.log("Player Removed Successfully : ", socketId);
 
+
+}
+
+const getRoomId = (socketId) => {
+    console.log("socket id : ", socketId);
+    console.log("Player Rooms : ", playersRooms);
+
+    const roomId = playersRooms[socketId];
+    return roomId ? roomId : null
 }
 
 module.exports = {
@@ -157,5 +181,7 @@ module.exports = {
     throwCards,
     checkWinner,
     changeTurn,
-    removePlayer
+    removePlayer,
+    getRoomId,
+    getPlayerDetails
 };
