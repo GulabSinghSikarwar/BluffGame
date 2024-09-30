@@ -4,13 +4,18 @@ const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
 // Function to create a full deck of cards
 export const createDeck = () => {
-  const deck = [];
+  const suits = ['S', 'H', 'C', 'D'];
+  const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+  let deck = [];
+
   suits.forEach((suit) => {
     ranks.forEach((rank) => {
-      deck.push(`${rank}${suit}`);
+      deck.push({ rank, suit });
     });
   });
-  return shuffle(deck);
+  shuffle(deck)
+
+  return deck;
 };
 
 // Shuffle the deck

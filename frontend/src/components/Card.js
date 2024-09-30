@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 
 const Card = ({ card }) => {
   // Assuming card images are named in the format 'rank-suit.png'
-  const imageUrl = `/assets/cards/${card}.png`; // Adjust the path as necessary
+  const imageUrl = `/assets/cards/${card.rank + card.suit}.png`; // Adjust the path as necessary
   useEffect(() => {
-    console.log("card:" ,card);
+    console.log("card:", card);
 
   }, [])
 

@@ -1,9 +1,10 @@
 // src/components/PlayerList.js
 
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import PlayerDetails from '../PlayerDetail/PlayerDetail';
 import { getRandomImage } from '../../../utils/constants';
 import './PlayerList.css';
+import { GameContext } from '../../../contexts/GameContext';
 
 const players = [
     {
@@ -28,7 +29,13 @@ const players = [
     },
 ];
 
+
 const PlayerList = () => {
+    const { gameState } = useContext(GameContext)
+    useEffect(() => {
+        console.log("Game STate : ", gameState);
+
+    }, [gameState])
     return (
         <div className="bg-white p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container">
             {/* Mapping through the players array */}

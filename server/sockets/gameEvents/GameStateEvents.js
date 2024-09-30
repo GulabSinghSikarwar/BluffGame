@@ -6,15 +6,19 @@ const gameService = require('../../services/gameService')
  */
 const handleGameStateEvents = (socket) => {
 
-    socket.on(Events.START_GAME, (gameId) => {
+    socket.on(SocketEventsEnum.START_GAME, (gameId) => {
         const gameStarted = gameService.startGame(gameId);
         if (gameStarted) {
             const roomDetails = gameService.getRoomDetails(gameId);
             socket.to(gameId).emit(Events.GAME_STARTED, roomDetails); // Notify players that the game has started
+
+            const game = gameService.getGame(gameId);
+            game.distributeCards(); // Distribute cards to each player individually
         } else {
-            socket.emit(Events.START_GAME_FAILED, 'Not enough players to start the game.');
+            socket.emit(SocketEventsEnum.START_GAME_FAILED, 'Not enough players to start the game.');
         }
     });
+
 
     socket.on(SocketEventsEnum.RESTART_GAME, () => {
         try {
@@ -46,8 +50,8 @@ const handleGameStateEvents = (socket) => {
         }
     });
 
-    socket.on(Events.GET_ROOM_DETAILS, (gameId) => {
-        const roomDetails = getRoomDetails(gameId);
+    socket.on(SocketEventsEnum.GET_ROOM_DETAILS, (gameId) => {
+        const roomDetails = gameService.getRoomDetails(gameId);
         socket.emit(Events.ROOM_DETAILS, roomDetails);
     });
 };

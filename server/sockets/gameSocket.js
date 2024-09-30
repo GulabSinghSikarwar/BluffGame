@@ -14,7 +14,7 @@ const initSocket = (io) => {
         // Handle various event listeners
         handleRoomEvents(socket);
         // handlePlayerActions(socket);
-        // handleGameStateEvents(socket);
+        handleGameStateEvents(socket);
         // handleCommunicationEvents(socket);
 
         // Handle disconnection

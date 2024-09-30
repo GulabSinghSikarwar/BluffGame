@@ -30,7 +30,10 @@ const joinGame = (gameId, player) => {
 
     const game = games[gameId];
     if (game) {
+        console.log(" game before joining : ", game.players);
+
         game.addPlayer(player);
+        console.log(" game Ater joining : ", game.players);
         return player;
     }
     throw new Error('Game not found');
@@ -45,7 +48,7 @@ const getRoomDetails = (gameId) => {
     console.log(" Gameid : ", gameId);
 
     const game = games[gameId];
-    console.log("game Service getRoomDetails,    : ", game);
+    // console.log("game Service getRoomDetails,    : ", game);
 
     return game ? game.getRoomDetails() : null;
 };

@@ -23,11 +23,15 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
     };
 
     const renderCardImage = (card) => {
-        const suit = card.slice(-1); // Get the last character for the suit
+        console.log("card : ",card);
+        
+        // return <></>
+
+        // const suit = card.slice(-1); // Get the last character for the suit
         return (
             <div className="flex  items-center">
-                <span className="text-lg">{card.slice(0, -1)}</span> {/* Display the rank */}
-                <img src={suits[suit]} alt={suit} className="w-8 h-8" /> {/* Display the suit image */}
+                <span className="text-lg">{card.rank}</span> {/* Display the rank */}
+                <img src={suits[card.suit]} alt={card.suit} className="w-8 h-8" /> {/* Display the suit image */}
             </div>
         );
     };
@@ -45,8 +49,8 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
                         key={index}
                         onClick={() => toggleCardSelection(card)}
                         className={`px-4 py-2 border rounded-md ${selectedCards.includes(card)
-                                ? 'bg-green-500 text-white'
-                                : 'bg-gray-100'
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-100'
                             }`}
                     >
                         {renderCardImage(card)}

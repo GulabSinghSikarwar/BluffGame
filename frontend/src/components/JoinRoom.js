@@ -8,7 +8,7 @@ const JoinRoom = () => {
   const [roomId, setRoomId] = useState('');
   const [username, setUsername] = useState(''); // New state for username
   const navigate = useNavigate();
-  const socket = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
 
   const mainCtx = useContext(MainContext)
   const joinRoom = () => {

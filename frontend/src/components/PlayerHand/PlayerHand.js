@@ -3,6 +3,8 @@ import Card from '../Card';
 import './PlayerHand.css';
 
 const PlayerHand = ({ selectedPlayer }) => {
+    console.log("Player cards :  : ", selectedPlayer);
+
     return (
         <div className="player-hand-container w-full mt-4">
             {/* <h4 className="mb-2">Your Hand:</h4> */}

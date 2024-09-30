@@ -1,4 +1,4 @@
-const Player =require('../../models/player')
+const Player = require('../../models/player')
 const { SocketEventsEnum } = require('../../utils/app.enums')
 const gameService = require('../../services/gameService')
 /**
@@ -6,13 +6,10 @@ const gameService = require('../../services/gameService')
  * @param {Socket} socket - The socket instance for the connection.
  */
 const handleRoomEvents = (socket) => {
+
     socket.on(SocketEventsEnum.JOIN_ROOM, (data) => {
         // console.log(`Player joined room: ${data.room}`);
         const room = data.room;
-        console.log(" room : ", room);
-        console.log(" data : ", data);
-
-
         // Handle join room logic
         joinRoom(socket, { username: data.name, roomId: room });
     });
@@ -41,8 +38,8 @@ function joinRoom(socket, { roomId, username }) {
         // TODO 1:  Check if a game already exists for the room, otherwise create a new game
 
         let game = gameService.getRoomDetails(roomId);
-        console.log("Game : ",game);
-        
+        console.log("Game : ", game);
+
         if (!game) {
             game = gameService.createGame(roomId); // Create a new game if it doesn't exist
             console.log(`Game created for room ${roomId}`);
@@ -50,11 +47,13 @@ function joinRoom(socket, { roomId, username }) {
 
         // Create a new player instance
         const newPlayer = new Player(socket.id, playerName);
-        console.log(" GAME : ",game);
-        
+        console.log(" Players  in Game Before Joining or in new Game : ", game.players);
+
 
         // TODO 2:  Add the new player to the game
         const isPlayerAdded = gameService.joinGame(game.id, newPlayer);
+        game = gameService.getRoomDetails(roomId)
+
         if (!isPlayerAdded) {
             socket.emit(SocketEventsEnum.ERROR, { message: 'Failed to join game.' });
             return;

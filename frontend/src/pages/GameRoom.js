@@ -12,6 +12,7 @@ import { MainContext } from '../contexts/mainContext';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../contexts/socketContext';
 import { SocketEventsEnum } from '../utils/constants';
+import { ToastContainer } from 'react-toastify';
 
 const demoPlayers = [
     { id: '1', name: 'Alice', cards: [] },
@@ -32,18 +33,18 @@ const GameRoom = () => {
     const navigate = useNavigate();
 
     const mainCtx = useContext(MainContext)
-    const socket = useContext(SocketContext)
+    const { socket } = useContext(SocketContext)
 
- 
+
     useEffect(() => {
         // Check if the room ID is present in localStorage
         console.log("Main : ", mainCtx);
         const username = mainCtx.name;
         const roomId = mainCtx.room;
         if (!username || !roomId) {
-            navigate('/')
+            // navigate('/')
         } else {
-            socket.emit(SocketEventsEnum.JOIN_ROOM, { room: roomId, name: username });
+            // socket.emit(SocketEventsEnum.NEW, { room: roomId, name: username });
         }
 
     }, [navigate, socket]);
@@ -108,7 +109,7 @@ const GameRoom = () => {
             </div>
             <div className='h-full w-[20%] bg-slate-600'>
                 <PlayerTurnSidebar />
-
+                <ToastContainer/>
             </div>
         </div>
     );

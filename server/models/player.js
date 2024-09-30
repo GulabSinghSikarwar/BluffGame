@@ -41,9 +41,15 @@ class Player {
             throw new Error("Card not found in hand");
         }
     }
+    // hasAceOfSpades() {
+    //     return this.cards.some(card => card.rank === 'Ace' && card.suit === 'Spades');
+    // }
+
     hasAceOfSpades() {
-        return this.cards.some(card => card.rank === 'Ace' && card.suit === 'Spades');
+        return this.hand.some(card => card.rank === 'A' && card.suit === 'Spades');
     }
+    
+
     sendCardCount(otherPlayerCount) {
         // Logic to send the count of cards to the player (using socket)
         // Example: socket.emit(Events.CARD_COUNT, { count: this.cards.length });

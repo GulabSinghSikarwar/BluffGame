@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import MainProvider from './contexts/mainContext';
-import SocketProvider from './contexts/socketContext';
+import { SocketProvider } from './contexts/socketContext';
 import { UsersProvider } from './contexts/usersContext';
+import { ToastContainer } from 'react-toastify';
 const App = () => {
     const [rooms, setRooms] = useState([]);
     const [dummyPlayers] = useState(['Player 1', 'Player 2', 'Player 3', 'Player 4']);
@@ -27,15 +28,9 @@ const App = () => {
     return (
 
         <div className="container mx-auto p-4">
-            <MainProvider>
-                <SocketProvider>
-                    <UsersProvider>
-                        <Header />
-                        <Outlet />
-                    </UsersProvider>
-                </SocketProvider>
-            </MainProvider>
-
+            <Header />
+            <Outlet />
+            <ToastContainer />
         </div>
 
     );

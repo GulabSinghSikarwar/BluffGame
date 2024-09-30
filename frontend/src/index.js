@@ -6,21 +6,27 @@ import reportWebVitals from './reportWebVitals';
 import { RouterProvider } from 'react-router-dom';
 import router from './utils/app.routes';
 import MainProvider from './contexts/mainContext';
-import SocketProvider from './contexts/socketContext';
+import { SocketProvider } from './contexts/socketContext';
 import { UsersProvider } from './contexts/usersContext';
+import { GameProvider } from './contexts/GameContext';
+import { ToastContainer } from 'react-toastify';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <App /> */}
     <MainProvider>
-      <SocketProvider>
-        <UsersProvider>
-          <RouterProvider router={router} >
-            <App />
-          </RouterProvider>
+      <GameProvider>
 
-        </UsersProvider>
-      </SocketProvider>
+        <SocketProvider>
+          <UsersProvider>
+            <RouterProvider router={router} >
+              <App />
+
+            </RouterProvider>
+
+          </UsersProvider>
+        </SocketProvider>
+      </GameProvider>
     </MainProvider>
 
   </React.StrictMode>
