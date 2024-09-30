@@ -8,6 +8,7 @@ const Header = () => {
 
   const { startGame } = useContext(SocketContext);
   const mainCtx = useContext(MainContext)
+  // const gameCtx
 
 
   const handleStartGame = () => {
@@ -29,10 +30,10 @@ const Header = () => {
 
   return (
     <header className="mb-4 flex justify-between items-center">
-      <h1 className="text-2xl font-bold">Bluff Card Game</h1>
+      <h1 className="text-2xl font-bold">Bluff Card Game X</h1>
 
 
-      {mainCtx.username && mainCtx.room &&
+      {mainCtx.name && mainCtx.room &&
         <div>
           <button
             onClick={leaveRoom}

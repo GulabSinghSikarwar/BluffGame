@@ -1,0 +1,11 @@
+.lobby-container {
+    background-image: url('../../assets/images/background/lobbyBg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    /* Ensures the image is centered */
+    min-height: 100vh;
+    /* Ensures the container is at least the height of the viewport */
+    padding-left: 16px;
+    padding-right: 16px;
+}

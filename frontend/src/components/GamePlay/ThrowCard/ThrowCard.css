@@ -14,3 +14,10 @@
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #555;
 }
+
+.Sidebar-heading-container {
+    font-family: "Roboto", system-ui;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    font-size: 18px;
+}

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { createDeck } from '../utils/cardDeck';
 import PlayerHand from '../components/PlayerHand/PlayerHand'; // Import the PlayerHand component
-import Card from '../components/Card';
+import Card from '../components/GamePlay/Card/Card';
 import './GameRoom.css'
 import PlayerList from '../components/Players/PlayerList/PlayerList';
 import PlayerStats from '../components/Players/PlayerStats/PlayerStats';
@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../contexts/socketContext';
 import { SocketEventsEnum } from '../utils/constants';
 import { ToastContainer } from 'react-toastify';
+import Header from '../components/Header';
 
 const demoPlayers = [
     { id: '1', name: 'Alice', cards: [] },
@@ -42,7 +43,7 @@ const GameRoom = () => {
         const username = mainCtx.name;
         const roomId = mainCtx.room;
         if (!username || !roomId) {
-            // navigate('/')
+            navigate('/')
         } else {
             // socket.emit(SocketEventsEnum.NEW, { room: roomId, name: username });
         }
@@ -96,20 +97,23 @@ const GameRoom = () => {
     const selectedPlayer = players.find((player) => player.id === selectedPlayerId);
 
     return (
-        <div className="h-screen flex w-screen ">
-            <div className='flex flex-col  lg:w-[80%] md:w-full'>{/* First div taking 75% height */}
-                <div className="h-[75%] bg-white-500  game-room-container">
-                    <PlayerHand selectedPlayer={selectedPlayer} />
+        <div>
+            <div className="h-screen flex w-screen ">
 
+                <div className='flex flex-col  lg:w-[80%] md:w-full'>{/* First div taking 75% height */}
+                    <div className="h-[75%] bg-white-500  game-room-container">
+                        <PlayerHand selectedPlayer={selectedPlayer} />
+
+                    </div>
+                    {/* Second div taking 25% height */}
+                    <div className="h-[25%]  flex items-center justify-center">
+                        <PlayerStats selectedPlayer={selectedPlayer} />
+                    </div>
                 </div>
-                {/* Second div taking 25% height */}
-                <div className="h-[25%] bg-green-500 flex items-center justify-center">
-                    <PlayerStats selectedPlayer={selectedPlayer} />
+                <div className='h-full w-[20%] bg-slate-600'>
+                    <PlayerTurnSidebar />
+                    <ToastContainer />
                 </div>
-            </div>
-            <div className='h-full w-[20%] bg-slate-600'>
-                <PlayerTurnSidebar />
-                <ToastContainer/>
             </div>
         </div>
     );

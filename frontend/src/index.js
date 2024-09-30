@@ -3,13 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { RouterProvider } from 'react-router-dom';
+import { Outlet, RouterProvider } from 'react-router-dom';
 import router from './utils/app.routes';
 import MainProvider from './contexts/mainContext';
 import { SocketProvider } from './contexts/socketContext';
 import { UsersProvider } from './contexts/usersContext';
 import { GameProvider } from './contexts/GameContext';
 import { ToastContainer } from 'react-toastify';
+import Header from './components/Header';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -20,8 +21,8 @@ root.render(
         <SocketProvider>
           <UsersProvider>
             <RouterProvider router={router} >
-              <App />
-
+              {/* <Header />
+              <Outlet /> */}
             </RouterProvider>
 
           </UsersProvider>

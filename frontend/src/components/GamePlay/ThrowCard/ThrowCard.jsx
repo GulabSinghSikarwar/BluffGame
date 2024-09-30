@@ -23,8 +23,8 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
     };
 
     const renderCardImage = (card) => {
-        console.log("card : ",card);
-        
+        console.log("card : ", card);
+
         // return <></>
 
         // const suit = card.slice(-1); // Get the last character for the suit
@@ -37,11 +37,11 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
     };
 
     return (
-        <div className="flex flex-col items-center p-4 
-    
-    bg-white p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container
+        <div className="flex flex-col items-center p-4 p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container
     ">
-            <h2 className="text-xl font-semibold mb-4">Select Cards to Throw</h2>
+            <div className='Sidebar-heading-container w-full flex justify-center bg-purplePallete-700 text-white py-4 rounded'>
+                <h2 className=" " >Select Cards to Throw</h2>
+            </div>
 
             <div className="flex flex-wrap gap-2 mb-4">
                 {cardsInHand.map((card, index) => (
@@ -58,7 +58,7 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
                 ))}
             </div>
 
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-4 bg-purplePallete-700 px-5 py-3 rounded  w-full justify-center">
                 <input
                     type="checkbox"
                     id="bluff"
@@ -66,7 +66,7 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
                     onChange={(e) => setIsBluff(e.target.checked)}
                     className="mr-2"
                 />
-                <label htmlFor="bluff">Make a Bluff</label>
+                <label htmlFor="bluff " className='text-white'>Make a Bluff</label>
             </div>
 
             <button

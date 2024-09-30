@@ -17,7 +17,15 @@ const initialGameState = {
 const GameProvider = ({ children }) => {
     const [gameState, setGameState] = useState(initialGameState);
 
-    const joinGame = (player) => {
+    const joinGame = (gameDetails) => {
+        const players = [...gameDetails.players]
+        setGameState((prevState) => ({
+            ...prevState,
+            players: players,
+        }));
+    };
+
+    const joinedNewPlayer = (player) => {
         setGameState((prevState) => ({
             ...prevState,
             players: [...prevState.players, player],
@@ -68,6 +76,7 @@ const GameProvider = ({ children }) => {
         distributeCards,
         changeTurn,
         startGame,
+        joinedNewPlayer
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

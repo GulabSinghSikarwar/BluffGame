@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './CreateGame.css'
 // import io from 'socket.io-client';
 
 // const socket = io("http://localhost:3000"); // Replace with your server address
@@ -18,9 +19,9 @@ const CreateRoom = () => {
   };
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md w-full max-w-md mx-auto mt-10">
+    <div className="flex flex-col items-center bg-purplePallete-700 p-6 rounded-lg shadow-md w-full max-w-md mx-auto mt-10  ">
       <h2 className="text-2xl font-semibold mb-4">Create a Room</h2>
-       
+
       <input
         type="text"
         placeholder="User Name"

@@ -28,9 +28,9 @@ const App = () => {
     return (
 
         <div className="container mx-auto p-4">
-            <Header />
+            {/* <Header /> */}
             <Outlet />
-            <ToastContainer />
+
         </div>
 
     );

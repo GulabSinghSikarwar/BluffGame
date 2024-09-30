@@ -1,6 +1,6 @@
 // src/components/PlayerList.js
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PlayerDetails from '../PlayerDetail/PlayerDetail';
 import { getRandomImage } from '../../../utils/constants';
 import './PlayerList.css';
@@ -31,20 +31,22 @@ const players = [
 
 
 const PlayerList = () => {
+    const gameCtx = useContext(GameContext)
     const { gameState } = useContext(GameContext)
     useEffect(() => {
         console.log("Game STate : ", gameState);
+        console.log("Game details : ", gameCtx.gameState);
 
     }, [gameState])
     return (
-        <div className="bg-white p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container">
+        <div className=" p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container">
             {/* Mapping through the players array */}
-            {players.map((player, index) => (
+            {gameCtx.gameState.players.map((player, index) => (
                 <PlayerDetails
-                    key={index}
-                    playerName={player.playerName}
-                    cardsLeft={player.cardsLeft}
-                    playerLogo={player.playerLogo}
+                    key={player.id}
+                    playerName={player.name}
+                    cardsLeft={player.cardCount}
+                    playerLogo={getRandomImage()}
                 />
             ))}
         </div>

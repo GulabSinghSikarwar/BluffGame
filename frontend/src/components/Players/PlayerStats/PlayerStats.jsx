@@ -8,10 +8,10 @@ function PlayerStats({ selectedPlayer }) {
         <div className='w-screen flex h-full'>
             {/* First Will be Users List  */}
 
-            <div className='w-[50%] bg-yellow-500 flex items-center justify-center'>
+            <div className='w-[50%]   flex items-center justify-center'>
                 <PlayerList />
             </div>
-            <div className='w-[50%] bg-orange-500 flex items-center justify-center'>
+            <div className='w-[50%]   flex items-center justify-center'>
 
                 <CardThrow cardsInHand={selectedPlayer.cards} />
             </div>

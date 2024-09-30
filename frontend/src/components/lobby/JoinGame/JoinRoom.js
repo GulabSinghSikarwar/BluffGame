@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SocketContext } from '../contexts/socketContext';
-import { SocketEventsEnum } from '../utils/constants';
-import { MainContext } from '../contexts/mainContext';
+import { SocketContext } from '../../../contexts/socketContext';
+import { SocketEventsEnum } from '../../../utils/constants';
+import { MainContext } from '../../../contexts/mainContext';
 
 const JoinRoom = () => {
   const [roomId, setRoomId] = useState('');
@@ -18,7 +18,6 @@ const JoinRoom = () => {
     if (roomId && username) { // Check if both roomId and username are provided
       mainCtx.setRoom(roomId)
       mainCtx.setName(username)
-
       socket.emit(SocketEventsEnum.JOIN_ROOM, { room: roomId, name: username });
       navigate(`/room/${roomId}`);
     } else {
@@ -29,8 +28,11 @@ const JoinRoom = () => {
 
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md w-full max-w-md mx-auto mt-10">
-      <h2 className="text-2xl font-semibold mb-4">Join a Room</h2>
+
+
+    <div className="flex flex-col items-center bg-purplePallete-700 p-6 rounded-lg shadow-md w-full
+     max-w-md mx-auto mt-10 " >
+
 
       {/* Input for Username */}
       <input
@@ -53,7 +55,7 @@ const JoinRoom = () => {
       {/* Join Room Button */}
       <button
         onClick={joinRoom}
-        className="bg-green-500 text-white p-2 rounded w-full hover:bg-green-600 transition duration-200"
+        className="bg-purplePallete-400 text-white p-2 rounded w-full hover:bg-green-600 transition duration-200"
       >
         Join Room
       </button>
