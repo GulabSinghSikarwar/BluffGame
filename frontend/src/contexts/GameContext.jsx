@@ -70,6 +70,46 @@ const GameProvider = ({ children }) => {
 
     };
 
+    const updateCards = (updatedCards) => {
+        setGameState((prevState) => {
+            return {
+                ...prevState,
+                cards: updatedCards
+            }
+        })
+    }
+    
+    const updateTurns = (turns) => {
+        console.log(" turns : ", turns);
+        
+        setGameState((prevState) => {
+            let updatedTurns = { ...turns }; // Create a copy of the new turns
+            return {
+                ...prevState, 
+                turns: updatedTurns // Correctly set the updated turns
+            };
+        });
+    };
+    
+
+    const updateCardCount = (updatedCardCount) => {
+
+        setGameState((prevState) => {
+            const updatedPlayers = prevState.players.map(player =>
+                player.id === updatedCardCount.id
+                    ? { ...player, cardCount: updatedCardCount.cardCount }
+                    : player
+            );
+            return {
+                ...prevState,
+                players: updatedPlayers
+            }
+
+        })
+
+    }
+
+
     const changeTurn = () => {
         setGameState((prevState) => {
             const nextTurn = (prevState.currentTurn + 1) % prevState.players.length;
@@ -103,7 +143,10 @@ const GameProvider = ({ children }) => {
         changeTurn,
         startGame,
         joinedNewPlayer,
-        playerLeft
+        playerLeft,
+        updateCards,
+        updateCardCount ,
+        updateTurns
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

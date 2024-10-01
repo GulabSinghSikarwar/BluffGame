@@ -1,13 +1,13 @@
-const SocketEventsEnum = require('../utils/app.enums');
-const Game = require('./game.js')
+const { SocketEventsEnum } = require('../utils/app.enums');
+const Game = require('./game.js');
+const TablePile = require('./tablePile.js');
 /**
  * Class representing game operations.
  */
 class GameOperations {
     /**
-     * Create game operations.
-     * @param {Game} game - The game object.
-     */
+  * @param {Game} game - The game object. 
+  */
     constructor(game) {
         this.game = game;
 
@@ -16,24 +16,45 @@ class GameOperations {
     /**
      * Throw cards on the table using the TablePile.
      * @param {string} playerId - The ID of the player throwing the cards.
-     * @param {Array<string>} cards - The cards being thrown by the player.
+     * @param {Object} cardsInfo - The cards being thrown by the player.
+     * @param {string} cardsInfo.rank
+     * @param {Array<string>} cardsInfo.cards
+    
      * @returns {Object|null} Event object or null if player is not found.
+     * @returns {Object|null} Returns an object containing the event, playerId, and the thrown cards.
+     * @returns {string} returns.player -  { id:player.id , name:player.name , cardCount:plaer.hand.length}.
+     * @returns {string[]} returns.cards - The  remaining cards of A player.
+     * @returns {null} Returns null if the player is not found or an error occurs.
      */
-    throwCards(playerId, cards) {
-        const player = this.game.players.find(p => p.id === playerId);
-        if (player) {
-            // Remove thrown cards from the player's hand
-            player.cards = player.cards.filter(card => !cards.includes(card));
+    throwCards(playerId, cardsInfo) {
+        try {
+            const player = this.game.players.find(p => p.id === playerId);
+            console.log("Players id : ", playerId);
+            console.log("Players player : ", player);
 
-            // Add the cards to the table pile
-            this.game.tablePile.addCards(playerId, cards);
+            if (player) {
+                // Remove thrown cards from the player's hand
+                console.log("Before Removing cards : ");
+                player.hand = player.hand.filter(card => !cardsInfo.cards.includes(card));
+                console.log("Card removed from Player Deck");
 
-            // Track the move in the game's moves log
-            this.game.moves.push({ playerId, cards });
+                // Add the move to the Move array in TablePile, which maintains information 
+                // regarding the last move (cards and playerId)
+                this.game.tablePile.addMove(playerId, cardsInfo.cards, cardsInfo.rank);
+                return {
+                    player: {
+                        name: player.name,
+                        id: player.id,
+                        cardCount: player.hand.length
+                    }, cards: player.hand
+                };
+            }
+            return null;
 
-            return { event: SocketEventsEnum.THROW_CARDS, playerId, cards };
+        } catch (error) {
+            console.error("An error occurred in throwCards:", error);
+            return null; // Return null or handle the error accordingly
         }
-        return null;
     }
 
     /**

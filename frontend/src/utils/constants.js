@@ -117,6 +117,8 @@ export const SocketEventsEnum = Object.freeze({
     SKIP_ACTION: 'SKIP_ACTION',
     CAUGHT_BLUFF: 'CAUGHT_BLUFF',
     PLAYER_LEFT:'PLAYER_LEFT',
+    PLAYER_CARD_UPDATE: 'PLAYER_CARD_UPDATE',
+    CARD_COUNT_UPDATE: 'CARD_COUNT_UPDATE',
   
     // Game State Events
     START_GAME: 'START_GAME',

@@ -34,11 +34,6 @@ const PlayerList = () => {
     const gameCtx = useContext(GameContext)
     const { gameState } = useContext(GameContext)
     useEffect(() => {
-        console.log("Game STate : ", gameState);
-        console.log("Game details : ", gameCtx.gameState);
-        console.log("GameState : ", gameState);
-
-
     }, [gameState])
     return (
         <div className=" p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container">

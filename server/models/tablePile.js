@@ -23,28 +23,34 @@ class TablePile {
     /**
      * Add a move to the pile.
      * @param {number} playerId - The ID of the player making the move.
+     * @param {string} rank - The card of which turn is going on .
      * @param {Array<string>} cards - The cards thrown by the player.
      */
-    addMove(playerId, cards) {
-        const move = new Move(playerId, cards);  // Create a new Move object
-        this.cards.push(...cards);               // Add cards to the pile
-        this.cardCount += move.cardCount;        // Track the number of cards thrown
-        this.moves.push(move);                   // Store the move
+    addMove(playerId, cards, rank) {
 
-        // Set the current turn card to the last card thrown
-        this.setCurrentTurnCard(cards);
+        try {
+            const move = new Move(playerId, cards);  // Create a new Move object
+            this.cards.push(...cards);               // Add cards to the pile
+            this.cardCount += move.cardCount;        // Track the number of cards thrown
+            this.moves.push(move);                   // Store the move
+            // Set the current turn card to the last card thrown
+            if (!this.currentTurnCard) {
+                this.setCurrentTurnCard(rank)
+            }
+            console.log("Moves : ", this.moves);
+
+        } catch (error) {
+            console.error("An error occurred in Adding Move  in  TablePile :", error);
+        }
+
     }
 
     /**
      * Set the current turn card based on the last card thrown.
-     * @param {Array<string>} cards - The list of cards thrown in the current move.
+     * @param {Array<string|null>} rank - The list of cards thrown in the current move.
      */
-    setCurrentTurnCard(cards) {
-        if (cards.length > 0) {
-            this.currentTurnCard = cards[cards.length - 1]; // Set to the last card in the thrown cards
-        } else {
-            this.currentTurnCard = null; // Reset if no cards were thrown
-        }
+    setCurrentTurnCard(rank) {
+        this.currentTurnCard = rank;
     }
 
     /**
@@ -63,6 +69,7 @@ class TablePile {
         if (this.moves.length === 0) return null;
         return this.moves[this.moves.length - 1].getMoveDetails(); // Return last move details
     }
+
 
     /**
      * Get all cards currently in the pile.

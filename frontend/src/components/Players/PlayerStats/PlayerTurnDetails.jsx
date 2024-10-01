@@ -62,7 +62,7 @@ function PlayerTurnSidebar() {
         <div className="sidebar h-full  w-full bg-purplePallete-700 text-white shadow-lg p-4 flex flex-col justify-between">
             <div>
                 <h2 className="text-xl font-bold mb-4  w-full text-center">Player Turns</h2>
-                {mainCtx.name && mainCtx.room  &&
+                {mainCtx.name && mainCtx.room &&
                     <div className="flex justify-around">
                         <button
                             onClick={leaveRoom}
@@ -101,7 +101,7 @@ function PlayerTurnSidebar() {
 
                     <div className="w-full p-4 bg-purplePallete-500 rounded">
                         <h3 className="text-center text-md font-semibold">Previous Turn</h3>
-                        <p className="text-center">{previousTurn}</p>
+                        <p className="text-center">{gameState.turns.previousTurn?.name || previousTurn}</p>
                     </div>
 
                     <div className="w-full p-4 bg-purplePallete-600 rounded border-2 border-yellow-500">

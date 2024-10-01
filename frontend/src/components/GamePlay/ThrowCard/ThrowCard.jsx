@@ -1,15 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { suits } from '../../../utils/constants';
 import './ThrowCard.css';
 import { SocketContext } from '../../../contexts/socketContext';
 import { GameContext } from '../../../contexts/GameContext';
+import { MainContext } from '../../../contexts/mainContext';
+import { useModal } from '../../../contexts/ModalContext';
+import { ButtonTypes } from '../../../utils/app.enum';
 
 const CardThrow = ({ cardsInHand }) => {
     const [selectedCards, setSelectedCards] = useState([]);
     const [rankInput, setRankInput] = useState(''); // State for rank input
     const { leaveGame, throwCard } = useContext(SocketContext);
     const { gameState } = useContext(GameContext)
-
+    const mainCtx = useContext(MainContext)
+    const [throwCardAllowed, setThrowCardAllowed] = useState(false)
+    const { openModal } = useModal()
 
     const toggleCardSelection = (card) => {
         setSelectedCards((prev) =>
@@ -20,6 +25,10 @@ const CardThrow = ({ cardsInHand }) => {
     };
 
     const handleSubmit = () => {
+
+        if (!throwCardAllowed) {
+            showWarning()
+        }
         if (selectedCards.length > 0 && rankInput) {
             const cardData = { rank: rankInput, cards: selectedCards }
             throwCard(cardData)
@@ -46,7 +55,7 @@ const CardThrow = ({ cardsInHand }) => {
 
         return { rank, suit };
     }
-    
+
     const renderCardImage = (card) => {
         const { rank, suit } = getRankAndSuit(card);
         return (
@@ -56,6 +65,37 @@ const CardThrow = ({ cardsInHand }) => {
             </div>
         );
     };
+
+    const showWarning = () => {
+        openModal({
+            title: "Warning Action",
+            message: "You are not allowed to Throw Card",
+            onConfirm: () => console.log("OK "),
+            confirmText: "Yes, proceed",
+            cancelText: "Cancel",
+            buttonType: ButtonTypes.WARNING
+        })
+    }
+
+    useEffect(() => {
+        console.log("Game State : ", gameState);
+
+        if (mainCtx) {
+            const name = mainCtx.name;
+            const turns = gameState.turns
+            if (name) {
+                if (turns && turns.currentTurn && turns.currentTurn.name == mainCtx.name) {
+                    console.log("start Status 1");
+                    setThrowCardAllowed(true)
+                } else {
+                    setThrowCardAllowed(false)
+                }
+            }
+        }
+
+
+
+    }, [gameState.turns])
 
     return (
         <div className="flex flex-col items-center p-4 p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container">

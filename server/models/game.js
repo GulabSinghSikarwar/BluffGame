@@ -163,15 +163,46 @@ class Game {
      */
     nextTurn() {
         // Increment the currentPlayerIndex and wrap around if necessary
-        return this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+        return (this.currentPlayerIndex + 1) % this.players.length;
     }
 
     checkWinner() {
         return this.gameOperations.checkWinner();
     }
 
-    throwCards(playerId, cards) {
-        return this.gameOperations.throwCards(playerId, cards);
+    /**
+        * Throw cards on the table using the TablePile.
+        * @param {string} playerId - The ID of the player throwing the cards.
+        * @param {Object} cardsInfo - The cards being thrown by the player.
+        * @param {string} cardsInfo.rank
+        * @param {Array<string>} cardsInfo.cards
+       
+        * @returns {Object|null} Event object or null if player is not found.
+        * @returns {Object|null} Returns an object containing the event, playerId, and the thrown cards.
+        * @returns {string} returns.player -  { id:player.id , name:player.name , cardCount:plaer.hand.length}.
+        * @returns {string[]} returns.cards - The  remaining cards of A player.
+        * @returns {null} Returns null if the player is not found or an error occurs.
+        */
+    throwCards(playerId, moveInfo) {
+        const previousTurn = this.players[this.currentPlayerIndex];
+
+        console.log("Before Changing turn , : Current Turn  : ", previousTurn);
+
+        console.log("game : infor : ");
+        let cardThrownUpdate = this.gameOperations.throwCards(playerId, moveInfo);
+        this.changeTurn()
+        console.log("After Changing Turn :..................... ",);
+
+        // also send the  turn change  information 
+        cardThrownUpdate['turns'] = {
+            currentTurn: this.players[this.currentPlayerIndex],
+            nextTurn: this.players[this.nextTurn()],
+            previousTurn
+        }
+        console.log("Turns : ", cardThrownUpdate.turns);
+
+
+        return cardThrownUpdate
     }
 
     skipTurn(playerId) {

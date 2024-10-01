@@ -1,6 +1,7 @@
 const { SocketEventsEnum } = require('../../utils/app.enums')
 const gameService = require('../../services/gameService')
 const Game = require('../../models/game')
+const { Socket } = require('socket.io')
 /**
  * Sets up game state-related socket event listeners.
  * @param {Socket} socket - The socket instance for the connection.
@@ -34,7 +35,7 @@ const handleGameStateEvents = (socket, io) => {
                 currentTurn: game.players[game.currentPlayerIndex],
                 nextTurn: game.players[game.nextTurn()]
             }
-            console.log(" turn information : ", turns);
+            console.log(" turn information : ...........", turns);
 
             game.players.forEach(player => {
                 console.log("Socket id : ", player.id);
@@ -61,8 +62,27 @@ const handleGameStateEvents = (socket, io) => {
             socket.emit(SocketEventsEnum.START_GAME_FAILED, 'Not enough players to start the game.');
         }
     });
+    socket.on(SocketEventsEnum.THROW_CARDS, (moveData) => {
+        try {
+            const roomId = gameService.getRoomId(socket.id);
+            const game = gameService.getGame(roomId);
 
+            const cardsThrownUpdate = game.throwCards(socket.id, moveData)
 
+            socket.emit(SocketEventsEnum.PLAYER_CARD_UPDATE, {
+                cards: cardsThrownUpdate.cards
+            })
+            // Updating All Users regarding the Card Count Update 
+            io.sockets.in(roomId).emit(SocketEventsEnum.CARD_COUNT_UPDATE, {
+                player: cardsThrownUpdate.player,
+                turns: cardsThrownUpdate.turns
+            })
+        } catch (error) {
+            console.error("An error occurred in Listening to Cards Thrown:", error);
+
+        }
+
+    })
 
     socket.on(SocketEventsEnum.RESTART_GAME, () => {
         try {
