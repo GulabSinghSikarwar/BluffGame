@@ -30,6 +30,12 @@ const handleGameStateEvents = (socket, io) => {
             }, {}); // Initialize with an empty object
 
             // Notify each player about their hand and the number of cards others have
+            const turns = {
+                currentTurn: game.players[game.currentPlayerIndex],
+                nextTurn: game.players[game.nextTurn()]
+            }
+            console.log(" turn information : ", turns);
+
             game.players.forEach(player => {
                 console.log("Socket id : ", player.id);
                 const cardCount = { ...allPlayerCardCount }; // Shallow copy works for simple objects
@@ -38,15 +44,13 @@ const handleGameStateEvents = (socket, io) => {
 
                 // Delete the current player's entry from the card count object
                 delete cardCount[player.id];
-                console.log("After deleting:", cardCount);
+
+
 
                 const playerData = {
                     myHand: { id: player.id, cards: player.hand, name: player.name }, // The cards for this specific player
                     otherPlayers: cardCount, // Info about other players (card count)
-                    turns: {
-                        currentTurn: game.players[game.currentPlayerIndex],
-                        nextTurn: game.players[game.nextTurn()],
-                    }
+                    turns
 
                 };
 

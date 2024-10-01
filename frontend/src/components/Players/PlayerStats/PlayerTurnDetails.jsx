@@ -62,7 +62,7 @@ function PlayerTurnSidebar() {
         <div className="sidebar h-full  w-full bg-purplePallete-700 text-white shadow-lg p-4 flex flex-col justify-between">
             <div>
                 <h2 className="text-xl font-bold mb-4  w-full text-center">Player Turns</h2>
-                {mainCtx.name && mainCtx.room &&   gameState.turns &&
+                {mainCtx.name && mainCtx.room  &&
                     <div className="flex justify-around">
                         <button
                             onClick={leaveRoom}
@@ -96,23 +96,25 @@ function PlayerTurnSidebar() {
 
             </div>
 
-            <div className="flex flex-col items-center space-y-6">
+            {
+                gameState.turns && <div className="flex flex-col items-center space-y-6">
 
-                <div className="w-full p-4 bg-purplePallete-500 rounded">
-                    <h3 className="text-center text-md font-semibold">Previous Turn</h3>
-                    <p className="text-center">{previousTurn}</p>
-                </div>
+                    <div className="w-full p-4 bg-purplePallete-500 rounded">
+                        <h3 className="text-center text-md font-semibold">Previous Turn</h3>
+                        <p className="text-center">{previousTurn}</p>
+                    </div>
 
-                <div className="w-full p-4 bg-purplePallete-600 rounded border-2 border-yellow-500">
-                    <h3 className="text-center text-md font-semibold">Current Turn</h3>
-                    <p className="text-center">{gameState.turns.currentTurn.name}</p>
-                </div>
+                    <div className="w-full p-4 bg-purplePallete-600 rounded border-2 border-yellow-500">
+                        <h3 className="text-center text-md font-semibold">Current Turn</h3>
+                        <p className="text-center">{gameState.turns.currentTurn.name}</p>
+                    </div>
 
-                <div className="w-full p-4 bg-purplePallete-500 rounded">
-                    <h3 className="text-center text-md font-semibold">Next Turn</h3>
-                    <p className="text-center">{gameState.turns.nextTurn.name}</p>
+                    <div className="w-full p-4 bg-purplePallete-500 rounded">
+                        <h3 className="text-center text-md font-semibold">Next Turn</h3>
+                        <p className="text-center">{gameState.turns.nextTurn.name}</p>
+                    </div>
                 </div>
-            </div>
+            }
 
             <button
                 className="bg-yellow-500 text-black p-2 rounded mt-4"

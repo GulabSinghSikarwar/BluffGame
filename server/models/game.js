@@ -72,9 +72,14 @@ class Game {
         if (this.players.length >= 1) {
             console.log(" here ", this.players);
             this.started = true;
-            this.currentPlayerIndex = this.players.findIndex(p => p.hasAceOfSpades()); // Find the player with Ace of Spades
 
             this.distributeCards();
+            this.currentPlayerIndex = this.players.findIndex(p => p.hasAceOfSpades());
+            console.log("currentPlayer index : ", this.currentPlayerIndex);
+
+            // Find the player with Ace of Spades
+            console.log(" currentPlayer : ", this.players[this.currentPlayerIndex]);
+            console.log(" currentPlayer  cards: ", this.players[this.currentPlayerIndex].hand);
             return true; // Game successfully started
         }
         return false; // Not enough players
@@ -130,9 +135,9 @@ class Game {
 
     distributeCards() {
         const deck = _.shuffle(createDeck());
-        console.log("deck : ",deck);
-        console.log("playes : ",this.players);
-        
+        console.log("deck : ", deck);
+        console.log("playes : ", this.players);
+
         const handSize = Math.floor(deck.length / this.players.length);
         console.log("here at disribution in class");
 
@@ -140,8 +145,10 @@ class Game {
         this.players.forEach(player => {
             player.hand = deck.splice(0, handSize); // Give each player a portion of the deck
         });
+        console.log(" players : ", this.players);
 
-      
+
+
     }
 
 

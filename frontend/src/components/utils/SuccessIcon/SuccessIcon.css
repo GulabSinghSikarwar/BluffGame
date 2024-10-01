@@ -1,0 +1,45 @@
+.alb {
+    --tw-bg-opacity: 1;
+    background-color: rgb(254 226 226 / var(--tw-bg-opacity));
+}.azy {
+    --tw-text-opacity: 1;
+    color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+
+.ry {
+    width: 3rem;
+}
+
+.aeh {
+    border-radius: 9999px;
+}
+
+.ayu {
+    --tw-text-opacity: 1;
+    color: rgb(22 163 74 / var(--tw-text-opacity));
+}
+
+.nt {
+    height: 3rem;
+}
+
+.sr {
+    width: 1.5rem;
+}
+
+.om {
+    height: 1.5rem;
+}
+
+.ma {
+    display: flex;
+}
+
+.zm {
+    align-items: center;
+}
+
+.zr {
+    justify-content: center;
+}

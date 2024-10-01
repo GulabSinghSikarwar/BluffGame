@@ -14,6 +14,9 @@ import { SocketContext } from '../contexts/socketContext';
 import { SocketEventsEnum } from '../utils/constants';
 import { ToastContainer } from 'react-toastify';
 import Header from '../components/Header';
+import { GameContext } from '../contexts/GameContext';
+import { useModal } from '../contexts/ModalContext';
+import { ButtonTypes } from '../utils/app.enum';
 
 const demoPlayers = [
     { id: '1', name: 'Alice', cards: [] },
@@ -34,7 +37,9 @@ const GameRoom = () => {
     const navigate = useNavigate();
 
     const mainCtx = useContext(MainContext)
+    const { gameState } = useContext(GameContext)
     const { socket } = useContext(SocketContext)
+    const { openModal } = useModal()
 
 
     useEffect(() => {
@@ -93,6 +98,33 @@ const GameRoom = () => {
         setPile([]);
         setTurn((prevTurn) => (prevTurn + 1) % players.length);
     };
+
+    useEffect(() => {
+
+        if (mainCtx) {
+            const name = mainCtx.name;
+            const turns = gameState.turns
+            if (name) {
+                if (turns && turns.currentTurn && turns.currentTurn.name == mainCtx.name) {
+                   console.log("start Status 1");
+                   
+                    openModal({
+                        title: "Confirm Action",
+                        message: "Please Thorow the Card to start the Game?",
+                        onConfirm: () => console.log("OK "),
+                        confirmText: "Yes, proceed",
+                        cancelText: "Cancel",
+                        buttonType: ButtonTypes.INFO
+                    })
+                }
+            }
+        }
+
+
+
+    }, [gameState])
+
+
 
     const selectedPlayer = players.find((player) => player.id === selectedPlayerId);
 

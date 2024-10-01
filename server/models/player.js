@@ -42,7 +42,8 @@ class Player {
     // }
 
     hasAceOfSpades() {
-        return this.hand.some(card => card.rank === 'A' && card.suit === 'S');
+
+        return this.hand.some(card => card === 'AS');
     }
 
 

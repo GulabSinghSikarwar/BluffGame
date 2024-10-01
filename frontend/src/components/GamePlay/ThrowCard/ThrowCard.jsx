@@ -1,11 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { suits } from '../../../utils/constants';
-import './ThrowCard.css'
+import './ThrowCard.css';
 import { SocketContext } from '../../../contexts/socketContext';
-const CardThrow = ({ cardsInHand, onThrow }) => {
+import { GameContext } from '../../../contexts/GameContext';
+
+const CardThrow = ({ cardsInHand }) => {
     const [selectedCards, setSelectedCards] = useState([]);
-    const [isBluff, setIsBluff] = useState(false);
-    const {leaveGame} =useContext(SocketContext)
+    const [rankInput, setRankInput] = useState(''); // State for rank input
+    const { leaveGame, throwCard } = useContext(SocketContext);
+    const { gameState } = useContext(GameContext)
+
 
     const toggleCardSelection = (card) => {
         setSelectedCards((prev) =>
@@ -16,65 +20,80 @@ const CardThrow = ({ cardsInHand, onThrow }) => {
     };
 
     const handleSubmit = () => {
-        if (selectedCards.length > 0) {
-            onThrow({ selectedCards, isBluff });
-            // Clear selections after submission
+        if (selectedCards.length > 0 && rankInput) {
+            const cardData = { rank: rankInput, cards: selectedCards }
+            throwCard(cardData)
             setSelectedCards([]);
-            setIsBluff(false);
+            setRankInput(''); // Clear rank input after submission
         }
     };
 
+    /**
+     * Extracts the rank and suit from a card notation.
+     * @param {string} card - The card notation (e.g., "4S", "AC").
+     * @returns {{ rank: string, suit: string }} An object containing the rank and suit of the card.
+     */
+
+    function getRankAndSuit(card) {
+        // Check if the card is not empty and has at least one character
+        if (!card || card.length === 0) {
+            throw new Error("Invalid card notation");
+        }
+        // Extract the rank (all characters except the last one)
+        const rank = card.slice(0, card.length - 1);
+        // Extract the suit (last character)
+        const suit = card.charAt(card.length - 1);
+
+        return { rank, suit };
+    }
+    
     const renderCardImage = (card) => {
-        // console.log("card : ", card);
-
-        // return <></>
-
-        // const suit = card.slice(-1); // Get the last character for the suit
+        const { rank, suit } = getRankAndSuit(card);
         return (
-            <div className="flex  items-center">
-                <span className="text-lg">{card.rank}</span> {/* Display the rank */}
-                <img src={suits[card.suit]} alt={card.suit} className="w-8 h-8" /> {/* Display the suit image */}
+            <div className="flex items-center">
+                <span className="text-lg">{rank}</span> {/* Display the rank */}
+                <img src={suits[suit]} alt={rank} className="w-8 h-8" /> {/* Display the suit image */}
             </div>
         );
     };
 
     return (
-        <div className="flex flex-col items-center p-4 p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container
-    ">
+        <div className="flex flex-col items-center p-4 p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container">
             <div className='Sidebar-heading-container w-full flex justify-center bg-purplePallete-700 text-white py-4 rounded'>
-                <h2 className=" " >Select Cards to Throw</h2>
+                <h2>Select Cards to Throw</h2>
             </div>
 
             <div className="flex flex-wrap gap-2 mb-4">
-                {cardsInHand.map((card, index) => (
+                {gameState && gameState.cards && gameState.cards.map((card, index) => (
                     <button
                         key={index}
                         onClick={() => toggleCardSelection(card)}
-                        className={`px-4 py-2 border rounded-md ${selectedCards.includes(card)
-                            ? 'bg-green-500 text-white'
-                            : 'bg-gray-100'
-                            }`}
+                        className={`px-4 py-2 border rounded-md ${selectedCards.includes(card) ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
                     >
                         {renderCardImage(card)}
                     </button>
                 ))}
             </div>
 
-            <div className="flex items-center mb-4 bg-purplePallete-700 px-5 py-4 rounded  w-full justify-center ">
+            {/* Input field for the rank */}
+            <div className="mb-4 w-full bg-purplePallete-700 text-white py-4 px-4 rounded">
+                <label htmlFor="rankInput" className="text-lg text-white mb-2 mt-8">Enter Rank:</label> {/* Added mt-8 */}
                 <input
-                    type="checkbox"
-                    id="bluff"
-                    checked={isBluff}
-                    onChange={(e) => setIsBluff(e.target.checked)}
-                    className="mr-2 "
+                    type="text"
+                    id="rankInput"
+                    value={rankInput}
+                    onChange={(e) => setRankInput(e.target.value)}
+                    className="border  text-black rounded-md p-2 w-full focus:outline-none focus:border-violet-500 mt-4" // Existing styles
+                    placeholder="Enter rank (e.g., true or false)"
                 />
-                <label htmlFor="bluff " className='text-white'>Make a Bluff</label>
+                <div className='mt-4'></div>
+                <label className="text-lg text-white mt-8">Number of Cards Selected: {selectedCards.length}</label> {/* Existing styles */}
             </div>
 
             <button
                 onClick={handleSubmit}
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md ${selectedCards.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={selectedCards.length === 0}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md ${selectedCards.length === 0 || !rankInput ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={selectedCards.length === 0 || !rankInput} // Disable if no rank is provided
             >
                 Throw Cards
             </button>

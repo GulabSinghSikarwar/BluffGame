@@ -26,8 +26,8 @@ const SocketProvider = ({ children }) => {
         });
 
         socket.on(SocketEventsEnum.DISTRIBUTE_CARDS, (cardResponse) => {
-            console.log("Cards info : ",cardResponse);
-            
+            console.log("Cards info : ", cardResponse);
+
             // console.log(`Distributing cards to player: ${playerId}`, cards);
             distributeCards(cardResponse); // Distribute cards to player
         });
@@ -63,11 +63,11 @@ const SocketProvider = ({ children }) => {
     // Emit events from the frontend
     const startGame = () => {
         socketEvents.emitEvent(SocketEventsEnum.START_GAME);
-     };
+    };
 
     const joinGameRoom = (playerName) => {
         socketEvents.emitEvent(SocketEventsEnum.JOIN_ROOM, playerName);
-     };
+    };
 
     const leaveGame = () => {
         console.log(" here : About to leave ",);
@@ -76,9 +76,14 @@ const SocketProvider = ({ children }) => {
         })
     }
 
-    const throwCard = (card) => {
-        socketEvents.emitEvent(SocketEventsEnum.THROW_CARDS, { card });
-        console.log(`Card thrown: ${card}`);
+    /**
+     *@param {Object} move
+     *@param {string} move.rank
+     *@param {Array<string>} move.cards
+     */
+    const throwCard = (move) => {
+        socketEvents.emitEvent(SocketEventsEnum.THROW_CARDS, move);
+        console.log(`Card thrown: ${JSON.stringify(move)}`);
     };
 
     const skipTurn = () => {

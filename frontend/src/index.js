@@ -11,23 +11,27 @@ import { UsersProvider } from './contexts/usersContext';
 import { GameProvider } from './contexts/GameContext';
 import { ToastContainer } from 'react-toastify';
 import Header from './components/Header';
+import { ModalProvider } from './contexts/ModalContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <App /> */}
     <MainProvider>
-      <GameProvider>
+      <ModalProvider>
 
-        <SocketProvider>
-          <UsersProvider>
-            <RouterProvider router={router} >
-              {/* <Header />
+        <GameProvider>
+          <SocketProvider>
+            <UsersProvider>
+              <RouterProvider router={router} >
+                {/* <Header />
               <Outlet /> */}
-            </RouterProvider>
+              </RouterProvider>
 
-          </UsersProvider>
-        </SocketProvider>
-      </GameProvider>
+            </UsersProvider>
+          </SocketProvider>
+        </GameProvider>
+      </ModalProvider>
+
     </MainProvider>
 
   </React.StrictMode>
