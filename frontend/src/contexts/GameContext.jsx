@@ -9,7 +9,7 @@ const GameContext = createContext();
 const initialGameState = {
     players: [],
     cards: [],
-    currentTurn: null,
+    turns: null,
     gameStarted: false,
 };
 
@@ -52,7 +52,7 @@ const GameProvider = ({ children }) => {
         }
 
         cardResponse.myHand.cards.sort()
-        
+
         players.push({
             id: cardResponse.myHand.id,
             name: cardResponse.myHand.name,
@@ -65,7 +65,9 @@ const GameProvider = ({ children }) => {
             ...prevState,
             cards: cardResponse.myHand.cards,
             players: players,
+            turns: cardResponse.turns
         }));
+
     };
 
     const changeTurn = () => {

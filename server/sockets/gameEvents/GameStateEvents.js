@@ -43,6 +43,11 @@ const handleGameStateEvents = (socket, io) => {
                 const playerData = {
                     myHand: { id: player.id, cards: player.hand, name: player.name }, // The cards for this specific player
                     otherPlayers: cardCount, // Info about other players (card count)
+                    turns: {
+                        currentTurn: game.players[game.currentPlayerIndex],
+                        nextTurn: game.players[game.nextTurn()],
+                    }
+
                 };
 
                 // Emit to each player individually
