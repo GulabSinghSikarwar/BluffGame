@@ -1,4 +1,6 @@
-const Move = require('./move')
+const { logger } = require('../utils/logger');
+const Move = require('./move');
+const Player = require('./player');
 /**
  * Class representing the pile of cards and moves in a game.
  */
@@ -121,6 +123,83 @@ class TablePile {
      */
     getMoveHistory() {
         return this.moves.map(move => move.getMoveDetails());
+    }
+
+    getPlayer() {
+
+    }
+    /**
+    * Check if the last move was a bluff.
+    * This compares the declared card rank with the actual cards thrown by the player.
+    * @param {Player} accusingPlayer - The ID of the player accusing the bluff.
+    * @param {Array<Player>} players - List of All Players.
+    * @returns {Object} Result of the bluff check with details about who takes the cards.
+    */
+    checkBluff(accusingPlayer, players) {
+        try {
+            if (this.moves.length === 0) {
+                throw new Error("No moves to check for bluff.");
+            }
+
+            const debugLog1 = `
+            In Table Pile
+            player id : ${JSON.stringify(accusingPlayer.id)}
+            accusing Player : ${JSON.stringify(accusingPlayer)}
+            Players  : ${JSON.stringify(players)}
+            `
+            logger.debug(debugLog1)
+            console.log(debugLog1)
+            if (!accusingPlayer) {
+                console.log("");
+                throw new Error("Accusing player not found.");
+            }
+            // Get the last move details
+            const lastMove = this.getLastMove();
+            const declaredRank = this.currentTurnCard;  // The rank declared during the turn
+            const { cards, playerId: lastPlayerId } = lastMove;  // Get cards and last player ID
+            const lastMovePlayer = this.getPlayerFromId(lastMove.playerId, players)
+            if (!lastMovePlayer) {
+                throw new Error("Last Move Player Not Found ");
+            }
+
+            // Check if all the cards in the last move match the declared rank
+            const isBluff = cards.some(card => !card.startsWith(declaredRank));
+            let result = null;
+            if (isBluff) {
+                console.log("Bluff Made Playerr Id : ", lastPlayerId);
+                console.log("Bluff Made Playerr Name  : ", lastMovePlayer.name);
+
+                // If the last player was bluffing, the last player takes the pile
+                result = {
+                    bluffDetected: true,
+                    playerToTakeCards: lastPlayerId,
+                    cardsTaken: this.takeAllCards(), // Last player takes all cards
+                    message: `Bluff detected! Player ${lastMovePlayer.name} takes all cards.`,
+                };
+            } else {
+                // If there was no bluff, the accusing player takes the pile
+                result = {
+                    bluffDetected: false,
+                    playerToTakeCards: accusingPlayer.id,
+                    cardsTaken: this.takeAllCards(), // Accusing player takes all cards
+                    message: `No bluff detected! Player ${accusingPlayer.name} takes all cards.`,
+                };
+            }
+            return result;
+        } catch (error) {
+            console.log("error : ", error);
+
+        }
+    }
+
+    /**
+     * @param {string} playerId 
+     * @param {Array<Player>} Players 
+     * @returns {Player}
+     */
+    getPlayerFromId(playerId, players) {
+        const player = players.find((player) => player.id == playerId);
+        return player;
     }
 }
 

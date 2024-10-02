@@ -239,8 +239,29 @@ class Game {
     clearTablePile() {
         return this.gameOperations.clearTablePile();
     }
+    /**
+     * @param {string} playerId 
+     * @param {string} cards 
+     * @returns {Player} updated player
+     */
+    addCardToPlayer(playerId, cards) {
+        const playerIndex = this.players.findIndex((player) => {
+            return player.id == playerId
+        })
+        console.log("Player Index : ", playerIndex);
+
+        const player = this.players[playerIndex];
+
+        console.log("Cards Taking Player Id : ",player.id);
+        console.log("Cards Taking Player Name: ",player.name);
+        
+        console.log("Player Index : ", player);
+        player.hand = player.hand.concat(cards);
+        
+        return player;
 
 
+    }
 }
 
 // Export the Game class for use in other modules

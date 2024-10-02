@@ -2,6 +2,7 @@ const { SocketEventsEnum } = require('../../utils/app.enums')
 const gameService = require('../../services/gameService')
 const Game = require('../../models/game')
 const { Socket } = require('socket.io')
+const { logger } = require('../../utils/logger')
 /**
  * Sets up game state-related socket event listeners.
  * @param {Socket} socket - The socket instance for the connection.
@@ -62,6 +63,7 @@ const handleGameStateEvents = (socket, io) => {
             socket.emit(SocketEventsEnum.START_GAME_FAILED, 'Not enough players to start the game.');
         }
     });
+
     socket.on(SocketEventsEnum.THROW_CARDS, (moveData) => {
         try {
             const roomId = gameService.getRoomId(socket.id);
@@ -82,6 +84,72 @@ const handleGameStateEvents = (socket, io) => {
 
         }
 
+    })
+    socket.on(SocketEventsEnum.CHECK_PREVIOUS_PLAYER, () => {
+        try {
+            const playerId = socket.id;
+            const roomId = gameService.playersRooms[playerId];
+            let game = gameService.getGame(roomId);
+            logger.debug(` roomID  : ${roomId}`)
+            logger.debug(` Accusing Player Id : ${playerId}`)
+            const player = game.getPlayerInfo(playerId);
+            // logger.debug(` Player--------- : ${JSON.stringify(player)}`)
+
+
+            /**
+            * 1. Fist Need to Update Cards in the BE
+            * 2. need to change the turn (increment the turn ) , send and current turns to all the players 
+            * 3. previous turn will be null
+            * 4. Need to Send the Cards to Single Player 
+            * 5. Need to Send the Card Count and Message to All Users  
+            *  */
+
+            console.log("Player : ", player);
+
+            const checkBluffResult = game.gameOperations.checkBluff(playerId);
+            //Step : 1 Add Cards to the Player 
+            console.log(" cards to be taken : ....", checkBluffResult.cardsTaken);
+
+            const updatedPlayer = game.addCardToPlayer(checkBluffResult.playerToTakeCards, checkBluffResult.cardsTaken)
+
+            //Step : 2  Turn changed 
+
+            game.changeTurn()
+            game = gameService.getGame(roomId);
+
+            //Step : 3  Turn changed
+            const currentTurn = game.players[game.currentPlayerIndex];
+            const nextTurn = game.players[game.nextTurn()]
+            const previousTurn = null
+
+            // Step : 4 Updating the Cards of Player 
+            io.to(checkBluffResult.playerToTakeCards).emit(SocketEventsEnum.PLAYER_CARD_UPDATE, {
+                cards: updatedPlayer.hand,
+            })
+            // Updating All  Peoples regarding the Checking Result 
+            const turns = {
+                currentTurn,
+                nextTurn,
+                previousTurn
+            }
+            io.sockets.in(roomId).emit(SocketEventsEnum.CARD_COUNT_UPDATE, {
+                player: {
+                    name: updatedPlayer.name,
+                    id: updatedPlayer.id,
+                    cardCount: updatedPlayer.hand.length
+                },
+                turns,
+                message: checkBluffResult.message
+            })
+
+
+
+
+
+        } catch (error) {
+            console.error("An error occurred in Checking Previous Player:", error);
+
+        }
     })
 
     socket.on(SocketEventsEnum.RESTART_GAME, () => {

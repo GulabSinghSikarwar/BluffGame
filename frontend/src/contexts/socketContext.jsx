@@ -26,60 +26,68 @@ const SocketProvider = ({ children }) => {
     const [room, setRoom] = useState('');
     const socketEvents = SocketEvents.getInstance(socket)
     useEffect(() => {
-        // Listen for socket events
-        socket.on(SocketEventsEnum.JOINED_ROOM, (data) => {
+        // Define event handlers
+        const handleJoinedRoom = (data) => {
             console.log('Joined room:', data);
-            joinGame(data.gameDetails)
-            // players.forEach((player) => joinGame(player)); // Call joinGame for each player
-
-        });
-
-        socket.on(SocketEventsEnum.DISTRIBUTE_CARDS, (cardResponse) => {
-            console.log("Cards info : ", cardResponse);
-
-            // console.log(`Distributing cards to player: ${playerId}`, cards);
-            distributeCards(cardResponse); // Distribute cards to player
-        });
-
-        socket.on(SocketEventsEnum.CHANGE_TURN, (newTurn) => {
-            console.log(`Turn changed: ${newTurn}`);
-            changeTurn(newTurn); // Update the game turn
-        });
-
-        socket.on(SocketEventsEnum.NEW_PLAYER_JOINED, (data) => {
-            console.log('New player joined');
-            toastService.info("New User Have Joined")
-            joinedNewPlayer(data.player)
-        });
-        socket.on(SocketEventsEnum.PLAYER_LEFT, (data) => {
-            toastService.info(data.message)
-            playerLeft(data)
-        })
-        socket.on(SocketEventsEnum.PLAYER_CARD_UPDATE, (cardUpdate) => {
-            console.log("CARD UPDATE : ", cardUpdate);
-
-            updateCards(cardUpdate.cards)
-        })
-
-        socket.on(SocketEventsEnum.CARD_COUNT_UPDATE, (cardUpdate) => {
-            console.log(SocketEventsEnum.CARD_COUNT_UPDATE, " ", cardUpdate);
-
-            updateCardCount(cardUpdate.player)
-            updateTurns(cardUpdate.turns)
-        })
-
-        socket.on('disconnect', () => {
-            console.log('Socket disconnected');
-        });
-
-        // Clean up socket listeners when the component unmounts
-        return () => {
-            socket.off(SocketEventsEnum.JOINED_ROOM);
-            socket.off(SocketEventsEnum.DISTRIBUTE_CARDS);
-            socket.off(SocketEventsEnum.CHANGE_TURN);
-            socket.off(SocketEventsEnum.NEW_PLAYER_JOINED);
+            joinGame(data.gameDetails);
         };
-    }, [joinGame, distributeCards, changeTurn]);
+
+        const handleDistributeCards = (cardResponse) => {
+            console.log("Cards info : ", cardResponse);
+            distributeCards(cardResponse);
+        };
+
+        const handleChangeTurn = (newTurn) => {
+            console.log(`Turn changed: ${newTurn}`);
+            changeTurn(newTurn);
+        };
+
+        const handleNewPlayerJoined = (data) => {
+            console.log('New player joined');
+            toastService.info("New User Have Joined");
+            joinedNewPlayer(data.player);
+        };
+
+        const handlePlayerLeft = (data) => {
+            toastService.info(data.message);
+            playerLeft(data);
+        };
+
+        const handlePlayerCardUpdate = (cardUpdate) => {
+            updateCards(cardUpdate.cards);
+        };
+
+        const handleCardCountUpdate = (cardUpdate) => {
+            console.log(SocketEventsEnum.CARD_COUNT_UPDATE, " ", cardUpdate);
+            updateCardCount(cardUpdate.player);
+            updateTurns(cardUpdate.turns);
+            if (cardUpdate.message) {
+                console.log("Message print : ", cardUpdate.message);
+                toastService.info(cardUpdate.message);
+            }
+        };
+
+        // Register event listeners
+        socket.on(SocketEventsEnum.JOINED_ROOM, handleJoinedRoom);
+        socket.on(SocketEventsEnum.DISTRIBUTE_CARDS, handleDistributeCards);
+        socket.on(SocketEventsEnum.CHANGE_TURN, handleChangeTurn);
+        socket.on(SocketEventsEnum.NEW_PLAYER_JOINED, handleNewPlayerJoined);
+        socket.on(SocketEventsEnum.PLAYER_LEFT, handlePlayerLeft);
+        socket.on(SocketEventsEnum.PLAYER_CARD_UPDATE, handlePlayerCardUpdate);
+        socket.on(SocketEventsEnum.CARD_COUNT_UPDATE, handleCardCountUpdate);
+
+        // Clean up event listeners on component unmount or re-render
+        return () => {
+            socket.off(SocketEventsEnum.JOINED_ROOM, handleJoinedRoom);
+            socket.off(SocketEventsEnum.DISTRIBUTE_CARDS, handleDistributeCards);
+            socket.off(SocketEventsEnum.CHANGE_TURN, handleChangeTurn);
+            socket.off(SocketEventsEnum.NEW_PLAYER_JOINED, handleNewPlayerJoined);
+            socket.off(SocketEventsEnum.PLAYER_LEFT, handlePlayerLeft);
+            socket.off(SocketEventsEnum.PLAYER_CARD_UPDATE, handlePlayerCardUpdate);
+            socket.off(SocketEventsEnum.CARD_COUNT_UPDATE, handleCardCountUpdate);
+        };
+    }, [joinGame, distributeCards, changeTurn, joinedNewPlayer, playerLeft, updateCards, updateCardCount, updateTurns]);
+
 
     // Emit events from the frontend
     const startGame = () => {
@@ -111,6 +119,7 @@ const SocketProvider = ({ children }) => {
         socketEvents.emitEvent(SocketEventsEnum.SKIP_ACTION);
         console.log('Turn skipped');
     };
+    const checkCards = () => { socketEvents.emitEvent(SocketEventsEnum.CHECK_PREVIOUS_PLAYER, {}) }
 
     const value = {
         socket, // Expose socket instance for direct access if needed
@@ -120,7 +129,8 @@ const SocketProvider = ({ children }) => {
         skipTurn,
         leaveGame,
         name: { name, setName }, // Expose name state and setter
-        room: { room, setRoom }  // Expose room state and setter
+        room: { room, setRoom }, // Expose room state and setter ,
+        checkCards,
     };
 
     return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;

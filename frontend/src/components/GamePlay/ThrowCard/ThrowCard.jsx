@@ -6,6 +6,7 @@ import { GameContext } from '../../../contexts/GameContext';
 import { MainContext } from '../../../contexts/mainContext';
 import { useModal } from '../../../contexts/ModalContext';
 import { ButtonTypes } from '../../../utils/app.enum';
+import BluffGameControls from '../BluffGameControls/BluffGameControls';
 
 const CardThrow = ({ cardsInHand }) => {
     const [selectedCards, setSelectedCards] = useState([]);
@@ -93,8 +94,6 @@ const CardThrow = ({ cardsInHand }) => {
             }
         }
 
-
-
     }, [gameState.turns])
 
     return (
@@ -130,13 +129,14 @@ const CardThrow = ({ cardsInHand }) => {
                 <label className="text-lg text-white mt-8">Number of Cards Selected: {selectedCards.length}</label> {/* Existing styles */}
             </div>
 
-            <button
+            {/* <button
                 onClick={handleSubmit}
                 className={`px-4 py-2 bg-blue-500 text-white rounded-md ${selectedCards.length === 0 || !rankInput ? 'opacity-50 cursor-not-allowed' : ''}`}
                 disabled={selectedCards.length === 0 || !rankInput} // Disable if no rank is provided
             >
                 Throw Cards
-            </button>
+            </button> */}
+            <BluffGameControls throwCardHandeler={handleSubmit} selectedCards={selectedCards} rankInput={rankInput} />
         </div>
     );
 };

@@ -14,8 +14,7 @@ import Header from './components/Header';
 import { ModalProvider } from './contexts/ModalContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    {/* <App /> */}
+  <div>
     <MainProvider>
       <ModalProvider>
 
@@ -33,8 +32,9 @@ root.render(
       </ModalProvider>
 
     </MainProvider>
+  </div>
 
-  </React.StrictMode>
+
 );
 
 // If you want to start measuring performance in your app, pass a function

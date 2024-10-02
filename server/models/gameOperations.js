@@ -1,5 +1,7 @@
 const { SocketEventsEnum } = require('../utils/app.enums');
+const { logger } = require('../utils/logger.js');
 const Game = require('./game.js');
+const Player = require('./player.js');
 const TablePile = require('./tablePile.js');
 /**
  * Class representing game operations.
@@ -83,33 +85,34 @@ class GameOperations {
         return null;
     }
 
+
     /**
-     * Handle bluff catching and transfer all cards from the table pile to the bluffing player.
-     * @param {string} playerId - The ID of the player who is caught bluffing.
-     * @returns {Object|null} Event object or null if bluff can't be caught.
-     */
-    caughtBluff(playerId) {
-        const lastMove = this.game.tablePile.getLastMove();
-
-        if (lastMove && lastMove.playerId === playerId) {
-            const caughtPlayer = this.game.players.find(p => p.id === playerId);
-
-            if (caughtPlayer) {
-                // The caught player takes all the cards from the table pile
-                const allCards = this.game.tablePile.takeAllCards();
-                caughtPlayer.cards.push(...allCards);
-
-                return {
-                    event: SocketEventsEnum.CAUGHT_BLUFF,
-                    playerId,
-                    cardsTaken: allCards.length
-                };
+    * Check if the last move was a bluff.
+    * This compares the declared card rank with the actual cards thrown by the player.
+    * @param {number} accusingPlayerId - The ID of the player accusing the bluff.
+    * @returns {Object} Result of the bluff check with details about who takes the cards.
+    */
+    checkBluff(accusingPlayerId) {
+        try {
+            const player = this.getPlayerFromId(accusingPlayerId);
+            const debugLog1 = `
+            In Game Operation : 
+            accusingPlayerId : ${accusingPlayerId}
+            player : ${JSON.stringify(player)}
+            `
+            logger.debug(debugLog1)
+            console.log(debugLog1);
+            
+            if (!player) {
+                throw new Error("Accusing Player not found");
             }
+            const result = this.game.tablePile.checkBluff(player, this.game.players);
+            return result;
+
+        } catch (error) {
+            console.log("Error While Checking Bluff in Game operations : ", error);
         }
-
-        return null;
     }
-
     /**
      * Clear the table pile after the round ends.
      * @returns {Object} Event object representing the clearing of the pile.
@@ -117,6 +120,14 @@ class GameOperations {
     clearTablePile() {
         this.game.tablePile.clearPile();
         return { event: SocketEventsEnum.CLEAR_PILE };
+    }
+    /**
+     * @param {string} playerId 
+     * @return {Player | undefined } -returns the player With having giving playerId  
+     */
+    getPlayerFromId(playerId) {
+        const player = this.game.players.find((player) => player.id == playerId);
+        return player;
     }
 }
 
