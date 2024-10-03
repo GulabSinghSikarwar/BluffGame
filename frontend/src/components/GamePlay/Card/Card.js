@@ -1,18 +1,28 @@
-import React from 'react';
+import React from "react";
+import './Card.scss';
 
-const Card = ({ card, index, triggerAnimation }) => {
+const Card = ({ card, index, totalCards }) => {
   const imageUrl = `/assets/cards/${card}.png`;
 
-  const animationStyle = triggerAnimation
-    ? {
-      animation: `flyIn 2s ease forwards`,
-      animationDelay: `${index * 0.2}s`,
-    }
-    : {}; // No animation if triggerAnimation is false
+  const rotation = (index - totalCards / 2) * 10; // Spread cards
+  const animationDelay = `${index * 0.2}s`;
+
+  // Hover effect calculations (manually handling trigonometry in JS)
+  const hoverDistance = '-2rem';
+  const hoverAngle = `${40 - index * 5}deg`;
+  const hoverRotate = `${-10 + index * 2}deg`;
 
   return (
-    <div className="card p-2 rounded shadow" style={animationStyle}>
-      <img src={imageUrl} alt={card} className="w-24 h-30" />
+    <div
+      className="card"
+      style={{
+        transform: `rotate(${rotation}deg)`,
+        animationDelay: animationDelay,
+        '--hover-distance': hoverDistance,
+        '--hover-rotate': hoverRotate,
+      }}
+    >
+      <img src={imageUrl} alt={`Card ${index}`} />
     </div>
   );
 };

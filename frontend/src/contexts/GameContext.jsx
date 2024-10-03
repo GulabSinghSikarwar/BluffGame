@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { SocketEventsEnum } from '../utils/constants';
 import toastService from '../services/ToastService';
+import { sortCardsByRank } from '../utils/app.utils';
 
 // Create the GameContext
 const GameContext = createContext();
@@ -30,10 +31,10 @@ const GameProvider = ({ children }) => {
             ...prevState,
             players: [...prevState.players, player],
         }));
-     };
+    };
 
     const playerLeft = (data) => {
-      
+
 
         setGameState(prevState => (
             {
@@ -49,7 +50,8 @@ const GameProvider = ({ children }) => {
             players.push({ ...cardResponse.otherPlayers[key], id: key })
         }
 
-        cardResponse.myHand.cards.sort()
+        // cardResponse.myHand.cards.sort()
+        sortCardsByRank(cardResponse.myHand.cards);
 
         players.push({
             id: cardResponse.myHand.id,
@@ -57,7 +59,7 @@ const GameProvider = ({ children }) => {
             cardCount: cardResponse.myHand.cards.length,
         })
 
-      
+
 
         setGameState((prevState) => ({
             ...prevState,
@@ -69,6 +71,10 @@ const GameProvider = ({ children }) => {
     };
 
     const updateCards = (updatedCards) => {
+        // Sorting the cards  
+        console.log("Updated Cards : ",updatedCards);
+        
+        sortCardsByRank(updatedCards);
         setGameState((prevState) => {
             return {
                 ...prevState,
@@ -76,18 +82,18 @@ const GameProvider = ({ children }) => {
             }
         })
     }
-    
+
     const updateTurns = (turns) => {
-      
+
         setGameState((prevState) => {
             let updatedTurns = { ...turns }; // Create a copy of the new turns
             return {
-                ...prevState, 
+                ...prevState,
                 turns: updatedTurns // Correctly set the updated turns
             };
         });
     };
-    
+
 
     const updateCardCount = (updatedCardCount) => {
 
@@ -142,7 +148,7 @@ const GameProvider = ({ children }) => {
         joinedNewPlayer,
         playerLeft,
         updateCards,
-        updateCardCount ,
+        updateCardCount,
         updateTurns
     };
 

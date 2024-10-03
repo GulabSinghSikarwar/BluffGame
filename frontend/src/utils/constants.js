@@ -25,7 +25,7 @@ export const dummyPlayers = [
     { id: '4', name: 'Player 4', cards: [] },
 ];
 
-const cardImages = {
+export const cardImages = {
     '2C': '/assets/cards/2C.png',
     '3C': '/assets/cards/3C.png',
     '4C': '/assets/cards/4C.png',

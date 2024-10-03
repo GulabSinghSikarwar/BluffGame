@@ -108,6 +108,9 @@ class Game {
         if (index !== -1) {
             // Remove the player from the array
             this.players.splice(index, 1);
+            if (this.players.length === 0) {
+                this.tablePile.clearPile();
+            }
             console.log(`${player} has been removed from the game.`);
         } else {
             console.log(`${player} was not found in the game.`);
@@ -252,12 +255,12 @@ class Game {
 
         const player = this.players[playerIndex];
 
-        console.log("Cards Taking Player Id : ",player.id);
-        console.log("Cards Taking Player Name: ",player.name);
-        
+        console.log("Cards Taking Player Id : ", player.id);
+        console.log("Cards Taking Player Name: ", player.name);
+
         console.log("Player Index : ", player);
         player.hand = player.hand.concat(cards);
-        
+
         return player;
 
 

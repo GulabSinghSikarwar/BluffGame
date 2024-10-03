@@ -39,7 +39,7 @@ class TablePile {
             if (!this.currentTurnCard) {
                 this.setCurrentTurnCard(rank)
             }
-            console.log("Moves : ", this.moves);
+            console.log("Moves.................... : ", this.moves);
 
         } catch (error) {
             console.error("An error occurred in Adding Move  in  TablePile :", error);
