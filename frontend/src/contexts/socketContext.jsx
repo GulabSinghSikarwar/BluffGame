@@ -28,22 +28,22 @@ const SocketProvider = ({ children }) => {
     useEffect(() => {
         // Define event handlers
         const handleJoinedRoom = (data) => {
-            console.log('Joined room:', data);
+         
             joinGame(data.gameDetails);
         };
 
         const handleDistributeCards = (cardResponse) => {
-            console.log("Cards info : ", cardResponse);
+            
             distributeCards(cardResponse);
         };
 
         const handleChangeTurn = (newTurn) => {
-            console.log(`Turn changed: ${newTurn}`);
+           
             changeTurn(newTurn);
         };
 
         const handleNewPlayerJoined = (data) => {
-            console.log('New player joined');
+           
             toastService.info("New User Have Joined");
             joinedNewPlayer(data.player);
         };
@@ -58,11 +58,11 @@ const SocketProvider = ({ children }) => {
         };
 
         const handleCardCountUpdate = (cardUpdate) => {
-            console.log(SocketEventsEnum.CARD_COUNT_UPDATE, " ", cardUpdate);
+            
             updateCardCount(cardUpdate.player);
             updateTurns(cardUpdate.turns);
             if (cardUpdate.message) {
-                console.log("Message print : ", cardUpdate.message);
+              
                 toastService.info(cardUpdate.message);
             }
         };
@@ -99,7 +99,7 @@ const SocketProvider = ({ children }) => {
     };
 
     const leaveGame = () => {
-        console.log(" here : About to leave ",);
+      
         socketEvents.emitEvent(SocketEventsEnum.LEAVE_ROOM, {
             room: room,
         })
@@ -112,12 +112,12 @@ const SocketProvider = ({ children }) => {
      */
     const throwCard = (move) => {
         socketEvents.emitEvent(SocketEventsEnum.THROW_CARDS, move);
-        console.log(`Card thrown: ${JSON.stringify(move)}`);
+       
     };
 
     const skipTurn = () => {
         socketEvents.emitEvent(SocketEventsEnum.SKIP_ACTION);
-        console.log('Turn skipped');
+        
     };
     const checkCards = () => { socketEvents.emitEvent(SocketEventsEnum.CHECK_PREVIOUS_PLAYER, {}) }
 

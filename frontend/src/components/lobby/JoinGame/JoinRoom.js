@@ -13,8 +13,7 @@ const JoinRoom = () => {
   const mainCtx = useContext(MainContext)
   const { room } = useContext(SocketContext)
   const joinRoom = () => {
-    console.log("hello");
-    console.log("socket: ", socket);
+  
 
     if (roomId && username) { // Check if both roomId and username are provided
       mainCtx.setRoom(roomId)

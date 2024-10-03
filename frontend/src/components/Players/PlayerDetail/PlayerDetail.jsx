@@ -5,10 +5,6 @@ import { MainContext } from '../../../contexts/mainContext';
 
 const PlayerDetails = ({ playerName, cardsLeft, playerLogo }) => {
   const mainCtx = useContext(MainContext)
-  useEffect(() => {
-    console.log("username  : ", mainCtx.name);
-
-  })
   return (
     <div className={`player-details rounded-lg mb-2 ${mainCtx.name === playerName && 'border-2 border-yellow-500'}`}>
       {/* Player Logo */}

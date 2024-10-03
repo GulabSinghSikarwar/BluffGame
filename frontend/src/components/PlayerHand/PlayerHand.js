@@ -13,10 +13,7 @@ const PlayerHand = ({ selectedPlayer }) => {
       setTriggerAnimation(true); // Set it to true after a small timeout to re-trigger
     }, 100); // Adjust delay if necessary
   };
-  useEffect(() => {
-    console.log("Game state : , ", gameState);
-
-  }, [gameState])
+ 
 
   return (
     <div className="player-hand-container w-full mt-4">

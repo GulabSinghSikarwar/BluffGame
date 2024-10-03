@@ -44,7 +44,6 @@ const GameRoom = () => {
 
     useEffect(() => {
         // Check if the room ID is present in localStorage
-        console.log("Main : ", mainCtx);
         const username = mainCtx.name;
         const roomId = mainCtx.room;
         if (!username || !roomId) {
@@ -100,14 +99,14 @@ const GameRoom = () => {
     };
 
     useEffect(() => {
-        console.log("Game State : ", gameState);
+       
 
         if (mainCtx) {
             const name = mainCtx.name;
             const turns = gameState.turns
             if (name) {
                 if (turns && turns.currentTurn && turns.currentTurn.name == mainCtx.name) {
-                    console.log("start Status 1");
+                  
 
                     openModal({
                         title: "Confirm Action",

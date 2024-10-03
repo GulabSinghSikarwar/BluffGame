@@ -68,6 +68,11 @@ const handleGameStateEvents = (socket, io) => {
         try {
             const roomId = gameService.getRoomId(socket.id);
             const game = gameService.getGame(roomId);
+            
+            
+            const player=game.getPlayerInfo(socket.id);
+            // Creating Information Message For Other Players 
+            const message = `Player : ${player.name} Throwed ${moveData.cards.length} ${moveData.rank}`
 
             const cardsThrownUpdate = game.throwCards(socket.id, moveData)
 
@@ -77,7 +82,8 @@ const handleGameStateEvents = (socket, io) => {
             // Updating All Users regarding the Card Count Update 
             io.sockets.in(roomId).emit(SocketEventsEnum.CARD_COUNT_UPDATE, {
                 player: cardsThrownUpdate.player,
-                turns: cardsThrownUpdate.turns
+                turns: cardsThrownUpdate.turns,
+                message
             })
         } catch (error) {
             console.error("An error occurred in Listening to Cards Thrown:", error);

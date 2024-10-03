@@ -44,20 +44,13 @@ function PlayerTurnSidebar() {
         // Confirm with the user before leaving the room
         const confirmLeave = window.confirm("Are you sure you want to leave the room?");
         if (confirmLeave) {
-            console.log("About to Leave Game ");
-
+           
             leaveGame()
             navigate('/');
         }
     };
 
-
-    useEffect(() => {
-        // You can implement the logic here to trigger nextTurn based on game events
-        console.log("Game State  : ", gameState);
-
-    }, [gameState]);
-
+ 
     return (
         <div className="sidebar h-full  w-full bg-purplePallete-700 text-white shadow-lg p-4 flex flex-col justify-between">
             <div>

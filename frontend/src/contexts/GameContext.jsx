@@ -30,12 +30,10 @@ const GameProvider = ({ children }) => {
             ...prevState,
             players: [...prevState.players, player],
         }));
-
-        toastService.info(`New Player Joined : ${JSON.stringify(player)}`)
-    };
+     };
 
     const playerLeft = (data) => {
-        console.log("Data : ", data);
+      
 
         setGameState(prevState => (
             {
@@ -59,7 +57,7 @@ const GameProvider = ({ children }) => {
             cardCount: cardResponse.myHand.cards.length,
         })
 
-        console.log("Players : ", players);
+      
 
         setGameState((prevState) => ({
             ...prevState,
@@ -80,8 +78,7 @@ const GameProvider = ({ children }) => {
     }
     
     const updateTurns = (turns) => {
-        console.log(" turns : ", turns);
-        
+      
         setGameState((prevState) => {
             let updatedTurns = { ...turns }; // Create a copy of the new turns
             return {

@@ -29,6 +29,7 @@ const CardThrow = ({ cardsInHand }) => {
 
         if (!throwCardAllowed) {
             showWarning()
+            return
         }
         if (selectedCards.length > 0 && rankInput) {
             const cardData = { rank: rankInput, cards: selectedCards }
@@ -79,14 +80,15 @@ const CardThrow = ({ cardsInHand }) => {
     }
 
     useEffect(() => {
-        console.log("Game State : ", gameState);
+
 
         if (mainCtx) {
             const name = mainCtx.name;
             const turns = gameState.turns
             if (name) {
+
                 if (turns && turns.currentTurn && turns.currentTurn.name == mainCtx.name) {
-                    console.log("start Status 1");
+
                     setThrowCardAllowed(true)
                 } else {
                     setThrowCardAllowed(false)
