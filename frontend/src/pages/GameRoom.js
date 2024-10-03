@@ -38,15 +38,15 @@ const GameRoom = () => {
 
     const mainCtx = useContext(MainContext)
     const { gameState } = useContext(GameContext)
-    const { socket } = useContext(SocketContext)
+    const { socket, room, name } = useContext(SocketContext)
     const { openModal } = useModal()
 
 
     useEffect(() => {
         // Check if the room ID is present in localStorage
-        const username = mainCtx.name;
-        const roomId = mainCtx.room;
-        if (!username || !roomId) {
+        const username = name.name;
+        const roomId = room.room;
+        if (!room.room || !name.name) {
             navigate('/')
         } else {
             // socket.emit(SocketEventsEnum.NEW, { room: roomId, name: username });
@@ -99,14 +99,14 @@ const GameRoom = () => {
     };
 
     useEffect(() => {
-       
+
 
         if (mainCtx) {
             const name = mainCtx.name;
             const turns = gameState.turns
             if (name) {
                 if (turns && turns.currentTurn && turns.currentTurn.name == mainCtx.name) {
-                  
+
 
                     openModal({
                         title: "Confirm Action",

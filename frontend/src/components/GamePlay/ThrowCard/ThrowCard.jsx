@@ -115,7 +115,7 @@ const CardThrow = ({ cardsInHand }) => {
                     </button>
                 ))}
             </div>
-
+                
             {/* Input field for the rank */}
             <div className="mb-4 w-full bg-purplePallete-700 text-white py-4 px-4 rounded">
                 <label htmlFor="rankInput" className="text-lg text-white mb-2 mt-8">Enter Rank:</label> {/* Added mt-8 */}
@@ -123,21 +123,13 @@ const CardThrow = ({ cardsInHand }) => {
                     type="text"
                     id="rankInput"
                     value={rankInput}
-                    onChange={(e) => setRankInput(e.target.value)}
-                    className="border  text-black rounded-md p-2 w-full focus:outline-none focus:border-violet-500 mt-4" // Existing styles
+                    onChange={(e) => setRankInput(e.target.value.toUpperCase())}
+                    className="border uppercase  text-black rounded-md p-2 w-full focus:outline-none focus:border-violet-500 mt-4" // Existing styles
                     placeholder="Enter rank (e.g., true or false)"
                 />
                 <div className='mt-4'></div>
                 <label className="text-lg text-white mt-8">Number of Cards Selected: {selectedCards.length}</label> {/* Existing styles */}
             </div>
-
-            {/* <button
-                onClick={handleSubmit}
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md ${selectedCards.length === 0 || !rankInput ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={selectedCards.length === 0 || !rankInput} // Disable if no rank is provided
-            >
-                Throw Cards
-            </button> */}
             <BluffGameControls throwCardHandeler={handleSubmit} selectedCards={selectedCards} rankInput={rankInput} />
         </div>
     );

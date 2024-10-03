@@ -44,13 +44,13 @@ function PlayerTurnSidebar() {
         // Confirm with the user before leaving the room
         const confirmLeave = window.confirm("Are you sure you want to leave the room?");
         if (confirmLeave) {
-           
+
             leaveGame()
             navigate('/');
         }
     };
 
- 
+
     return (
         <div className="sidebar h-full  w-full bg-purplePallete-700 text-white shadow-lg p-4 flex flex-col justify-between">
             <div>
@@ -91,21 +91,24 @@ function PlayerTurnSidebar() {
 
             {
                 gameState.turns && <div className="flex flex-col items-center space-y-6">
-
-                    <div className="w-full p-4 bg-purplePallete-500 rounded">
-                        <h3 className="text-center text-md font-semibold">Previous Turn</h3>
-                        <p className="text-center">{gameState.turns.previousTurn?.name || previousTurn}</p>
-                    </div>
-
-                    <div className="w-full p-4 bg-purplePallete-600 rounded border-2 border-yellow-500">
-                        <h3 className="text-center text-md font-semibold">Current Turn</h3>
-                        <p className="text-center">{gameState.turns.currentTurn.name}</p>
-                    </div>
-
-                    <div className="w-full p-4 bg-purplePallete-500 rounded">
-                        <h3 className="text-center text-md font-semibold">Next Turn</h3>
-                        <p className="text-center">{gameState.turns.nextTurn.name}</p>
-                    </div>
+                    {
+                        gameState.turns.previousTurn?.name && <div className="w-full p-4 bg-purplePallete-500 rounded">
+                            <h3 className="text-center text-md font-semibold">Previous Turn</h3>
+                            <p className="text-center">{gameState.turns.previousTurn?.name || previousTurn}</p>
+                        </div>
+                    }
+                    {
+                        gameState.turns?.currentTurn?.name && <div className="w-full p-4 bg-purplePallete-600 rounded border-2 border-yellow-500">
+                            <h3 className="text-center text-md font-semibold">Current Turn</h3>
+                            <p className="text-center">{gameState.turns.currentTurn.name}</p>
+                        </div>
+                    }
+                    {
+                        gameState.turns.nextTurn.name && <div className="w-full p-4 bg-purplePallete-500 rounded">
+                            <h3 className="text-center text-md font-semibold">Next Turn</h3>
+                            <p className="text-center">{gameState.turns.nextTurn.name}</p>
+                        </div>
+                    }
                 </div>
             }
 

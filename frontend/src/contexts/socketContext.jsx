@@ -4,12 +4,15 @@ import { GameContext } from './GameContext';
 import { SocketEventsEnum } from '../utils/constants';
 import toastService from '../services/ToastService';
 import SocketEvents from '../utils/SocketEvents';
-
+import { useModal } from './ModalContext';
+import { ButtonTypes } from '../utils/app.enum';
+import { MainContext } from './mainContext';
 // Create the SocketContext
 const SocketContext = createContext();
 
 // Initialize Socket.IO connection
 const socket = io('http://localhost:5000'); // Change the URL to your server address
+
 
 const SocketProvider = ({ children }) => {
     const {
@@ -24,26 +27,47 @@ const SocketProvider = ({ children }) => {
     } = useContext(GameContext); // Using GameContext to update the game state
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
+    const { openModal } = useModal()
+    const mainCtx = useContext(MainContext)
+
     const socketEvents = SocketEvents.getInstance(socket)
     useEffect(() => {
         // Define event handlers
         const handleJoinedRoom = (data) => {
-         
-            joinGame(data.gameDetails);
+            if (!data.joining) {
+                openModal({
+                    title: "Confirm Action",
+                    message: data.message,
+                    onConfirm: () => console.log("OK "),
+                    confirmText: "Yes, proceed",
+                    cancelText: "Cancel",
+                    buttonType: ButtonTypes.WARNING
+                })
+
+                return
+            } else {
+
+                joinGame(data.gameDetails);
+                const roomId = data.gameDetails.roomId
+                setName(data.gameDetails.username)
+                setRoom(data.gameDetails.roomId)
+
+            }
+
         };
 
         const handleDistributeCards = (cardResponse) => {
-            
+
             distributeCards(cardResponse);
         };
 
         const handleChangeTurn = (newTurn) => {
-           
+
             changeTurn(newTurn);
         };
 
         const handleNewPlayerJoined = (data) => {
-           
+
             toastService.info("New User Have Joined");
             joinedNewPlayer(data.player);
         };
@@ -58,11 +82,11 @@ const SocketProvider = ({ children }) => {
         };
 
         const handleCardCountUpdate = (cardUpdate) => {
-            
+
             updateCardCount(cardUpdate.player);
             updateTurns(cardUpdate.turns);
             if (cardUpdate.message) {
-              
+
                 toastService.info(cardUpdate.message);
             }
         };
@@ -99,7 +123,7 @@ const SocketProvider = ({ children }) => {
     };
 
     const leaveGame = () => {
-      
+
         socketEvents.emitEvent(SocketEventsEnum.LEAVE_ROOM, {
             room: room,
         })
@@ -112,12 +136,12 @@ const SocketProvider = ({ children }) => {
      */
     const throwCard = (move) => {
         socketEvents.emitEvent(SocketEventsEnum.THROW_CARDS, move);
-       
+
     };
 
     const skipTurn = () => {
         socketEvents.emitEvent(SocketEventsEnum.SKIP_ACTION);
-        
+
     };
     const checkCards = () => { socketEvents.emitEvent(SocketEventsEnum.CHECK_PREVIOUS_PLAYER, {}) }
 

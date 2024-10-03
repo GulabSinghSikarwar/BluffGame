@@ -42,7 +42,7 @@ const joinGame = (gameId, player) => {
 /**
  * Get room details for a specific game.
  * @param {string} gameId - The ID of the game.
- * @returns {Object|null} The room details or null if not found.
+ * @returns {Game} The room details or null if not found.
  */
 const getRoomDetails = (gameId) => {
     /**

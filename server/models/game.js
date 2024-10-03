@@ -6,7 +6,7 @@ const EventHandlers = require('../services/eventHandlers'); // Import the EventH
 const _ = require('lodash'); // For shuffling
 const TablePile = require('./tablePile'); // Import the TablePile class
 const GameOperations = require('./gameOperations'); // Import GameOperations class
-
+const RoundWinner = require('./roundWinner');
 class Game {
     /**
          * Create a game.
@@ -44,11 +44,10 @@ class Game {
         this.moves = [];
 
         /**
-         * @type {Array<string>}
+         * @type {Array<RoundWinner>}
          * @description List of players who have won rounds in the game.
          */
-        this.roundWinners = [];
-
+        this.roundWinner = [];
         /**
          * @type {TablePile}
          * @description The pile of cards currently on the table.
@@ -60,6 +59,8 @@ class Game {
          * @description An instance of GameOperations for handling game-specific operations like throwing cards, bluffing, etc.
          */
         this.gameOperations = new GameOperations(this);
+
+
     }
     shuffleDeck() {
         for (let i = this.deck.length - 1; i > 0; i--) {

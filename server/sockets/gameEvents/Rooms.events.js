@@ -2,7 +2,7 @@
 const Player = require('../../models/player');
 const { SocketEventsEnum } = require('../../utils/app.enums');
 const gameService = require('../../services/gameService');
-
+const { Socket } = require('socket.io')
 /**
  * Sets up room-related socket event listeners.
  * @param {Socket} socket - The socket instance for the connection.
@@ -17,9 +17,9 @@ const handleRoomEvents = (socket) => {
     socket.on(SocketEventsEnum.LEAVE_ROOM, (data) => {
         const room = data.room;
         console.log("room : ", room.length);
-        
-        console.log("Listened : Left : ..............",room);
-        
+
+        console.log("Listened : Left : ..............", room);
+
         // Handle leave room logic
         handlePlayerLeave(socket, room, true);
     });
@@ -44,7 +44,7 @@ const rooms = {};
  */
 function handlePlayerLeave(socket, room, isLeaving) {
     const player = gameService.getPlayerDetails(room, socket.id);
-    
+
     if (player) {
         // Remove player from the game
         gameService.removePlayer(socket.id);
@@ -55,7 +55,7 @@ function handlePlayerLeave(socket, room, isLeaving) {
             player: player,
             players: gameService.getRoomDetails(room).players
         });
-        
+
         // Leave the room
         socket.leave(room);
         console.log(`${player.name} left room: ${room}`);
@@ -81,6 +81,14 @@ function joinRoom(socket, { roomId, username }) {
             game = gameService.createGame(roomId); // Create a new game if it doesn't exist
             console.log(`Game created for room ${roomId}`);
         }
+        if (game && game.started) {
+            socket.emit(SocketEventsEnum.JOINED_ROOM, {
+                message: 'Game Already Started , cannot join the Game !!',
+                joining: false,
+            });
+            return 
+        }
+
 
         // Create a new player instance
         const newPlayer = new Player(socket.id, playerName);
@@ -100,10 +108,12 @@ function joinRoom(socket, { roomId, username }) {
         // Send the game details to the newly joined player
         socket.emit(SocketEventsEnum.JOINED_ROOM, {
             message: 'Welcome to the game!',
+            joining: true,
             gameDetails: {
                 roomId: roomId,
                 players: game.players, // Send list of current players
                 gameId: game.id,
+                username
             }
         });
 

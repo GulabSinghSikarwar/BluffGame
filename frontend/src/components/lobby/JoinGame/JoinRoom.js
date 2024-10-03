@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../../contexts/socketContext';
 import { SocketEventsEnum } from '../../../utils/constants';
@@ -11,20 +11,27 @@ const JoinRoom = () => {
   const { socket } = useContext(SocketContext);
 
   const mainCtx = useContext(MainContext)
-  const { room } = useContext(SocketContext)
+  const { room, name } = useContext(SocketContext)
   const joinRoom = () => {
-  
+
 
     if (roomId && username) { // Check if both roomId and username are provided
       mainCtx.setRoom(roomId)
       mainCtx.setName(username)
       room.setRoom(roomId)
       socket.emit(SocketEventsEnum.JOIN_ROOM, { room: roomId, name: username });
-      navigate(`/room/${roomId}`);
     } else {
       alert('Please enter both Room ID and Username.'); // Alert if inputs are missing
     }
   };
+
+  useEffect(() => {
+    if (name.name && room.room) {
+      console.log("room id : ",room);
+      
+      navigate(`/room/${roomId}`);
+    }
+  }, [room, name])
 
 
 
