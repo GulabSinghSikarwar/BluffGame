@@ -13,6 +13,8 @@ const JoinRoom = () => {
   const mainCtx = useContext(MainContext)
   const { room, name } = useContext(SocketContext)
   const joinRoom = () => {
+    console.log(" join room");  
+
 
 
     if (roomId && username) { // Check if both roomId and username are provided
@@ -27,8 +29,8 @@ const JoinRoom = () => {
 
   useEffect(() => {
     if (name.name && room.room) {
-      console.log("room id : ",room);
-      
+      console.log("room id : ", room);
+
       navigate(`/room/${roomId}`);
     }
   }, [room, name])

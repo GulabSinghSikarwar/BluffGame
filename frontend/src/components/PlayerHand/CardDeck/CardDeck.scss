@@ -34,7 +34,9 @@
 //   transform: rotate(calc(var(--i) * 10deg)) translateY(-160px); /* More upward movement on hover */
 //   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Shadow effect */
 // }
-.card:hover {
+ 
+
+.selected-card{
   transform: rotate(calc(var(--i) * 5deg)) translate(calc(var(--i) * 20px), -160px); /* More upward movement on hover */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Shadow effect */
 }

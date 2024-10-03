@@ -7,21 +7,33 @@ import { MainContext } from '../../../contexts/mainContext';
 import { useModal } from '../../../contexts/ModalContext';
 import { ButtonTypes } from '../../../utils/app.enum';
 import BluffGameControls from '../BluffGameControls/BluffGameControls';
+import toastService from '../../../services/ToastService';
 
 const CardThrow = ({ cardsInHand }) => {
-    const [selectedCards, setSelectedCards] = useState([]);
     const [rankInput, setRankInput] = useState(''); // State for rank input
     const { leaveGame, throwCard } = useContext(SocketContext);
     const { gameState } = useContext(GameContext)
     const mainCtx = useContext(MainContext)
+    const { name } = mainCtx
+    const [selectedCards, setSelectedCards] = useState(mainCtx.selectedCards);
     const [throwCardAllowed, setThrowCardAllowed] = useState(false)
-    const { openModal } = useModal()
+    const { openModal } = useModal();
 
     const toggleCardSelection = (card) => {
-        setSelectedCards((prev) =>
-            prev.includes(card)
+
+        if (!checkForTurns()) {
+            console.log("here ");
+
+            return
+        }
+        setSelectedCards((prev) => {
+            const updatedCards = prev.includes(card)
                 ? prev.filter((c) => c !== card)
-                : [...prev, card]
+                : [...prev, card];
+
+            mainCtx.setSelectedCards(updatedCards);
+            return updatedCards;
+        }
         );
     };
 
@@ -68,6 +80,20 @@ const CardThrow = ({ cardsInHand }) => {
         );
     };
 
+    const checkForTurns = () => {
+        const turns = gameState.turns
+        if (name) {
+            console.log("name : ", name, " turns : ", turns);
+
+            if (turns && turns.currentTurn && turns.currentTurn.name != name) {
+                console.log("error ");
+
+                toastService.warning("Its Not Your Turn,Wait For Your Turn")
+                return false
+            }
+        }
+        return true;
+    }
     const showWarning = () => {
         openModal({
             title: "Warning Action",
@@ -98,6 +124,11 @@ const CardThrow = ({ cardsInHand }) => {
 
     }, [gameState.turns])
 
+    useEffect(() => {
+        if (mainCtx.selectedCards) {
+            setSelectedCards(mainCtx.selectedCards)
+        }
+    }, [mainCtx.selectedCards])
     return (
         <div className="flex flex-col items-center p-4 p-6 rounded-lg w-full h-full mx-auto max-h-full overflow-y-auto player-list-container">
             <div className='Sidebar-heading-container w-full flex justify-center bg-purplePallete-700 text-white py-4 rounded'>
@@ -115,7 +146,7 @@ const CardThrow = ({ cardsInHand }) => {
                     </button>
                 ))}
             </div>
-                
+
             {/* Input field for the rank */}
             <div className="mb-4 w-full bg-purplePallete-700 text-white py-4 px-4 rounded">
                 <label htmlFor="rankInput" className="text-lg text-white mb-2 mt-8">Enter Rank:</label> {/* Added mt-8 */}
