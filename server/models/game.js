@@ -7,6 +7,7 @@ const _ = require('lodash'); // For shuffling
 const TablePile = require('./tablePile'); // Import the TablePile class
 const GameOperations = require('./gameOperations'); // Import GameOperations class
 const RoundWinner = require('./roundWinner');
+
 class Game {
     /**
          * Create a game.
@@ -47,7 +48,7 @@ class Game {
          * @type {Array<RoundWinner>}
          * @description List of players who have won rounds in the game.
          */
-        this.roundWinner = [];
+        this.roundWinners = [];
         /**
          * @type {TablePile}
          * @description The pile of cards currently on the table.
@@ -157,7 +158,13 @@ class Game {
 
 
     changeTurn() {
-        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+        try {
+            this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+            
+        } catch (error) {
+            console.log("Something Went Wrong while Changing trurn :",error);
+
+        }
         return { event: SocketEventsEnum.CHANGE_TURN, currentPlayer: this.getCurrentPlayer().id };
     }
 
@@ -168,6 +175,9 @@ class Game {
     nextTurn() {
         // Increment the currentPlayerIndex and wrap around if necessary
         return (this.currentPlayerIndex + 1) % this.players.length;
+    }
+    previousPlayer(){
+        return (this.currentPlayerIndex - 1) % this.players.length;
     }
 
     checkWinner() {

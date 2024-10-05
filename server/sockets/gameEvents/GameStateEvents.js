@@ -68,9 +68,9 @@ const handleGameStateEvents = (socket, io) => {
         try {
             const roomId = gameService.getRoomId(socket.id);
             const game = gameService.getGame(roomId);
-            
-            
-            const player=game.getPlayerInfo(socket.id);
+
+
+            const player = game.getPlayerInfo(socket.id);
             // Creating Information Message For Other Players 
             const message = `Player : ${player.name} Throwed ${moveData.cards.length} ${moveData.rank}`
 
@@ -138,15 +138,21 @@ const handleGameStateEvents = (socket, io) => {
                 nextTurn,
                 previousTurn
             }
-            io.sockets.in(roomId).emit(SocketEventsEnum.CARD_COUNT_UPDATE, {
-                player: {
-                    name: updatedPlayer.name,
-                    id: updatedPlayer.id,
-                    cardCount: updatedPlayer.hand.length
-                },
-                turns,
-                message: checkBluffResult.message
-            })
+            try {
+                io.sockets.in(roomId).emit(SocketEventsEnum.CARD_COUNT_UPDATE, {
+                    player: {
+                        name: updatedPlayer.name,
+                        id: updatedPlayer.id,
+                        cardCount: updatedPlayer.hand.length
+                    },
+                    turns,
+                    message: checkBluffResult.message,
+                    currentTurnCard: gameService.getGame(roomId).tablePile.currentTurnCard
+                })
+            } catch (error) {
+                console.log("error :", error);
+
+            }
 
 
 
@@ -155,6 +161,27 @@ const handleGameStateEvents = (socket, io) => {
         } catch (error) {
             console.error("An error occurred in Checking Previous Player:", error);
 
+        }
+    })
+
+    socket.on(SocketEventsEnum.SKIP_ACTION, () => {
+        try {
+            const gameId = gameService.getRoomId(socket.id);
+            console.log("Game Id : ",gameId);
+            console.log("Games : ",gameService.games);
+            
+            const game = gameService.getGame(gameId)
+            console.log("Game : ",game);
+            
+            console.log("Game  operations : : ",game.gameOperations);
+            
+            const cardUpdate = game.gameOperations.skipTurn();
+            io.sockets.in(gameId).emit(SocketEventsEnum.CARD_COUNT_UPDATE,
+                cardUpdate)
+        } catch (error) {
+            console.log("Some error Occured While Skipping Turn : ",error);
+            // game or room Id is same 
+            
         }
     })
 

@@ -49,3 +49,16 @@ export const getStatusIcon = (type) => {
             return <WarningIcon />;
     }
 }
+
+export function getRankAndSuit(card) {
+    // Check if the card is not empty and has at least one character
+    if (!card || card.length === 0) {
+        throw new Error("Invalid card notation");
+    }
+    // Extract the rank (all characters except the last one)
+    const rank = card.slice(0, card.length - 1);
+    // Extract the suit (last character)
+    const suit = card.charAt(card.length - 1);
+
+    return { rank, suit };
+}

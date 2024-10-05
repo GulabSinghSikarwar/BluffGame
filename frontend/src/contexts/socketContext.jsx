@@ -23,7 +23,8 @@ const SocketProvider = ({ children }) => {
         playerLeft,
         updateCards,
         updateCardCount,
-        updateTurns
+        updateTurns,
+        updateCurrentTurnCard
     } = useContext(GameContext); // Using GameContext to update the game state
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
@@ -83,11 +84,17 @@ const SocketProvider = ({ children }) => {
 
         const handleCardCountUpdate = (cardUpdate) => {
 
-            updateCardCount(cardUpdate.player);
-            updateTurns(cardUpdate.turns);
+            if(cardUpdate.player){
+                updateCardCount(cardUpdate.player);
+            }
+            if(cardUpdate.turns){
+                updateTurns(cardUpdate.turns);
+            }
             if (cardUpdate.message) {
-
                 toastService.info(cardUpdate.message);
+            }
+            if(cardUpdate.currentTurnCard){
+                updateCurrentTurnCard(cardUpdate.currentTurnCard);
             }
         };
 

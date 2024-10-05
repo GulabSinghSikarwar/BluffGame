@@ -16,6 +16,12 @@ class Player {
         this.id = id;          // string
         this.name = name;      // string
         this.hand = hand;
+        /**
+         * @type {boolean} -Maintaining the Variable to check if player have skipped 
+         *  their turn or not 
+
+         */
+        this.hasSkipped = false
     }
     /**
      * Adds a card to the player's hand.

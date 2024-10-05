@@ -1,7 +1,12 @@
 const Game = require('../models/game'); // Use require for CommonJS
 const Player = require('../models/player'); // Adjusted the import to use CommonJS
 const { Card } = require('../models/card'); // Use require for CommonJS
-
+/**
+ * An object where each key is a string representing the game ID,
+ * and each value is an instance of the Game class.
+ * 
+ * @type {Object.<string, Game>}
+ */
 const games = {}; // Using a plain object to store games
 const playersRooms = {}
 
@@ -170,9 +175,9 @@ const removePlayer = (socketId) => {
         console.log('Game Not Found');
         return
     }
+    if (game.players.length == 0) game.started = false;
+    
     game.removePlayer(socketId)
-
-
 }
 
 const getRoomId = (socketId) => {

@@ -1,7 +1,9 @@
 const { SocketEventsEnum } = require('../utils/app.enums');
 const { logger } = require('../utils/logger.js');
 const Game = require('./game.js');
+const Move = require('./move.js');
 const Player = require('./player.js');
+const RoundWinner = require('./roundWinner.js');
 const TablePile = require('./tablePile.js');
 /**
  * Class representing game operations.
@@ -62,15 +64,35 @@ class GameOperations {
     /**
      * Skip the turn for a player.
      * @param {string} playerId - The ID of the player skipping their turn.
-     * @returns {Object|null} Event object or null if player is not found.
+     * @returns {Object|null}  Object ( containing turns) 
      */
-    skipTurn(playerId) {
-        const player = this.game.players.find(p => p.id === playerId);
-        if (player) {
-            this.game.moves.push({ playerId, action: 'skipped' });
-            return { event: SocketEventsEnum.SKIP_ACTION, playerId };
+    skipTurn() {
+        // const player = this.game.players.find(p => p.id === playerId);
+        // if (player) {
+        //     this.game.moves.push({ playerId, action: 'skipped' });
+        //     return { event: SocketEventsEnum.SKIP_ACTION, playerId };
+        // }
+        try {
+            /**
+             * @type  {Player} player
+
+             */
+            const currentPlayer = this.game.players[this.game.currentPlayerIndex];
+            const message = `Player ${currentPlayer.name} Have Skip the turn`
+            this.game.changeTurn();
+            const c = this.game[this.game]
+            const turns = {
+                currentTurn: this.game.players[this.game.currentPlayerIndex],
+                nextTurn: this.game.players[this.game.nextTurn()],
+                previousTurn: currentPlayer
+            }
+            return {
+                turns, message
+            }
+        } catch (error) {
+            console.log(`In Game Operation ,Skip Turn, some eror occured :`, error);
+
         }
-        return null;
     }
 
     /**
@@ -78,11 +100,45 @@ class GameOperations {
      * @returns {Object|null} Event object if a winner is found, or null otherwise.
      */
     checkWinner() {
-        const winner = this.game.players.find(player => player.cards.length === 0);
-        if (winner) {
-            return { event: SocketEventsEnum.CHECK_WINNER, winner: winner.id };
+        try {
+            /**
+         * For Deciding Winner we will check following things and if any player Fullfills all Conditions will be added winner list 
+         */
+            const previousPlayerIndex = this.game.previousPlayer();
+            const previousPlayer = this.game.players[previousPlayerIndex];
+
+            //1. Player Should Not Have have any Cards 
+            const noCardLeft = previousPlayer.hand.length == 0
+            //2. Player Should Not Have any cards in Draw pile at the top 
+            /**
+             * @type {Move} -Move that is stored in the Table Pile
+             */
+            const lastMove = this.game.tablePile.getLastMove()
+            const havePendingMove = true
+            if (lastMove) {
+                havePendingMove = lastMove.playerId == previousPlayer.id
+                const haveWon = noCardLeft && !havePendingMove;
+
+                //3.if Player Won the Round then add him in to round winners and remove
+                // from the Players list
+                if (haveWon) {
+                    const winner = new RoundWinner(
+                        this.game.roundWinners.length + 1,
+                        previousPlayer.name,
+                        previousPlayer.id
+                    );
+
+                    this.game.roundWinners.push(winner)
+                }
+            }
+
+
+
+        } catch (error) {
+            console.log("Some Error Occured while checking Winner in Game Operation");
+
+
         }
-        return null;
     }
 
 
@@ -102,7 +158,7 @@ class GameOperations {
             `
             logger.debug(debugLog1)
             console.log(debugLog1);
-            
+
             if (!player) {
                 throw new Error("Accusing Player not found");
             }
@@ -128,6 +184,25 @@ class GameOperations {
     getPlayerFromId(playerId) {
         const player = this.game.players.find((player) => player.id == playerId);
         return player;
+    }
+
+    checkTurn() {
+        try {
+            const allSkipped = this.game.players.every(p => p.hasSkipped);
+
+            if (allSkipped) {
+                // If all players skipped, remove cards from the table
+                console.log("All players skipped. Removing cards from the table.");
+                this.game.tablePile.clearPile()
+                // this.game.changeTurn();
+                // TODO :we need to emit the event that table pile is cleared 
+            } else {
+                // Proceed to the next player's turn
+                this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+            }
+        } catch (error) {
+
+        }
     }
 }
 

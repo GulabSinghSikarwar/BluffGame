@@ -12,6 +12,7 @@ const initialGameState = {
     cards: [],
     turns: null,
     gameStarted: false,
+    currentTurnCard: null,
 };
 
 // GameProvider component
@@ -72,8 +73,8 @@ const GameProvider = ({ children }) => {
 
     const updateCards = (updatedCards) => {
         // Sorting the cards  
-        console.log("Updated Cards : ",updatedCards);
-        
+        console.log("Updated Cards : ", updatedCards);
+
         sortCardsByRank(updatedCards);
         setGameState((prevState) => {
             return {
@@ -99,8 +100,8 @@ const GameProvider = ({ children }) => {
 
         setGameState((prevState) => {
             const updatedPlayers = prevState.players.map(player =>
-                player.id === updatedCardCount.id
-                    ? { ...player, cardCount: updatedCardCount.cardCount }
+                player.id === updatedCardCount?.id
+                    ? { ...player, cardCount: updatedCardCount?.cardCount }
                     : player
             );
             return {
@@ -139,17 +140,27 @@ const GameProvider = ({ children }) => {
         }
     }, [gameState.players]);
 
+    const updateCurrentTurnCard = (currentTurnCard) => {
+        setGameState((prevState) => {
+            return {
+                ...prevState,
+                currentTurnCard: currentTurnCard
+            }
+        })
+    }
+
     const value = {
         gameState,
         joinGame,
-        distributeCards,
+        distributeCards,    
         changeTurn,
         startGame,
         joinedNewPlayer,
         playerLeft,
         updateCards,
         updateCardCount,
-        updateTurns
+        updateTurns,
+        updateCurrentTurnCard,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
